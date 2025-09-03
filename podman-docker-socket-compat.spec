@@ -21,6 +21,9 @@ mkdir -p %{buildroot}/etc/systemd/system
 ln -s /usr/lib/systemd/system/podman.socket %{buildroot}/etc/systemd/system/docker.socket
 ln -s /usr/lib/systemd/system/podman.service %{buildroot}/etc/systemd/system/docker.service
 
+%postun
+systemctl daemon-reload
+
 %files
 %attr(0644,root,root) /etc/systemd/system/docker.socket
 %attr(0644,root,root) /etc/systemd/system/docker.service
