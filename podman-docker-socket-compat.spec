@@ -1,5 +1,5 @@
 Name:           podman-docker-socket-compat
-Version:        0.0.1
+Version:        0.0.2
 Release:        1
 Summary:        Provides docker.socket and docker.service aliases for Podman's socket
 License:        MIT
@@ -24,12 +24,3 @@ ln -s /usr/lib/systemd/system/podman.service %{buildroot}/etc/systemd/system/doc
 %files
 %attr(0644,root,root) /etc/systemd/system/docker.socket
 %attr(0644,root,root) /etc/systemd/system/docker.service
-
-%post
-%systemd_post docker.socket
-
-%preun
-%systemd_preun docker.socket
-
-%postun
-%systemd_postun docker.socket
