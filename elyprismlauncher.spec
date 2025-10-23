@@ -139,7 +139,6 @@ appstream-util validate-relax --nonet \
 %license LICENSE COPYING.md
 %dir %{_datadir}/ElyPrismLauncher
 %{_bindir}/elyprismlauncher
-%{_bindir}/elyprismlauncher_updater
 %{_datadir}/ElyPrismLauncher/*
 %{_datadir}/applications/org.prismlauncher.PrismLauncher.desktop
 %{_datadir}/icons/hicolor/scalable/apps/org.prismlauncher.PrismLauncher.svg
