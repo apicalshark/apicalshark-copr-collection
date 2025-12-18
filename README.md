@@ -1,1 +1,1 @@
-# podman-docker-socket-compat-copr
+# personal spec collection
