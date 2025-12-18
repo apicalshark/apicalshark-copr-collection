@@ -1,3 +1,7 @@
+%global custom_cflags -O3 -march=x86-64-v3 -fPIC -fno-semantic-interposition
+%global _hardened_build 0
+%global _lto_cflags -flto=auto
+
 Name:           pkg2zip-fork
 Version:        2.6
 Release:        1%{?dist}
@@ -20,7 +24,9 @@ It decrypts PlayStation Vita pkg files and packages them into zip archives.
 patch -p1 -i %{SOURCE1}
 
 %build
-%make_build
+CFLAGS="%{optflags} %{custom_cflags}"
+LDFLAGS="%{build_ldflags} %{_lto_cflags}"
+%make_build CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS"
 
 %install
 install -Dm755 pkg2zip %{buildroot}%{_bindir}/pkg2zip
