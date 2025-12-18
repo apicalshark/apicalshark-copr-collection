@@ -1,6 +1,7 @@
 %global custom_cflags -O3 -march=x86-64-v3 -fPIC -fno-semantic-interposition
 %global _hardened_build 0
 %global _lto_cflags -flto=auto
+%global debug_package %{nil}
 
 Name:           pkg2zip-fork
 Version:        2.6
