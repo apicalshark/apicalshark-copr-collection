@@ -1,6 +1,6 @@
 %global debug_package %{nil}
 %global _pkgname Vita3K
-%global _hardened_build 0
+%undefine _hardened_build
 
 Name:           vita3k
 Version:        0.0.2
