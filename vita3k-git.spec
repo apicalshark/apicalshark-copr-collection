@@ -28,12 +28,12 @@ cmake -B build -GNinja \
       -DCMAKE_INSTALL_PREFIX="/usr" \
       -DUSE_VITA3K_UPDATE=OFF \
       -DXXH_X86DISPATCH_ALLOW_AVX=ON
-ninja
+cmake --build build
 popd
 
 %install
-pushd build
-DESTDIR=$RPM_BUILD_ROOT ninja install
+pushd %{_pkgname}
+DESTDIR=$RPM_BUILD_ROOT cmake --install build
 popd
 
 %files
