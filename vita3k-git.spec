@@ -4,7 +4,7 @@
 
 Name:           vita3k
 Version:        0.0.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Experimental PlayStation Vita emulator
 License:        GPLv2
 URL:            https://github.com/Vita3K/Vita3K
