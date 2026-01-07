@@ -48,7 +48,7 @@ BuildRequires:    temurin-17-jdk
 BuildRequires:    java-17-openjdk-devel
 %endif
 BuildRequires:    libappstream-glib
-BuildRequires:    gamemode-devel
+BuildRequires:    gamemode-devel qrencode-devel libarchive-devel tomlplusplus-devel
 
 BuildRequires:    cmake(Qt%{qt_version}Concurrent) >= %{min_qt_version}
 BuildRequires:    cmake(Qt%{qt_version}Core) >= %{min_qt_version}
