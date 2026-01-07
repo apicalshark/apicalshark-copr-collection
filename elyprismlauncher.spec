@@ -131,7 +131,7 @@ rm -rf libraries/{extra-cmake-modules,filesystem,zlib}
 # || 0%{?rhel} > 9
 %if 0%{?fedora} > 37
 appstream-util validate-relax --nonet \
-  %{buildroot}%{_metainfodir}/org.prismlauncher.PrismLauncher.metainfo.xml
+  %{buildroot}%{_metainfodir}/io.github.elyprismlauncher.ElyPrismLauncher.metainfo.xml
 %endif
 
 
@@ -146,7 +146,7 @@ appstream-util validate-relax --nonet \
 %{_datadir}/mime/packages/modrinth-mrpack-mime.xml
 %{_datadir}/qlogging-categories?/elyprismlauncher.categories
 %{_mandir}/man?/*
-%{_metainfodir}/*.metainfo.xml
+%{_metainfodir}/io.github.elyprismlauncher.ElyPrismLauncher.metainfo.xml
 
 
 %changelog
