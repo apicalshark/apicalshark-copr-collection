@@ -142,7 +142,7 @@ appstream-util validate-relax --nonet \
 %{_bindir}/elyprismlauncher
 %{_datadir}/ElyPrismLauncher/*
 %{_datadir}/applications/*.desktop
-%{_datadir}/icons/hicolor/scalable/apps/*.svg
+%{_datadir}/icons/hicolor/*/apps/*
 %{_datadir}/mime/packages/modrinth-mrpack-mime.xml
 %{_datadir}/qlogging-categories?/elyprismlauncher.categories
 %{_mandir}/man?/*
