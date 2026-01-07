@@ -48,6 +48,7 @@ BuildRequires:    temurin-17-jdk
 BuildRequires:    java-17-openjdk-devel
 %endif
 BuildRequires:    libappstream-glib
+BuildRequires:    gamemode-devel
 
 BuildRequires:    cmake(Qt%{qt_version}Concurrent) >= %{min_qt_version}
 BuildRequires:    cmake(Qt%{qt_version}Core) >= %{min_qt_version}
@@ -140,12 +141,12 @@ appstream-util validate-relax --nonet \
 %dir %{_datadir}/ElyPrismLauncher
 %{_bindir}/elyprismlauncher
 %{_datadir}/ElyPrismLauncher/*
-%{_datadir}/applications/org.prismlauncher.PrismLauncher.desktop
-%{_datadir}/icons/hicolor/scalable/apps/org.prismlauncher.PrismLauncher.svg
+%{_datadir}/applications/*.desktop
+%{_datadir}/icons/hicolor/scalable/apps/*.svg
 %{_datadir}/mime/packages/modrinth-mrpack-mime.xml
 %{_datadir}/qlogging-categories?/elyprismlauncher.categories
-%{_mandir}/man?/prismlauncher.*
-%{_metainfodir}/org.prismlauncher.PrismLauncher.metainfo.xml
+%{_mandir}/man?/*
+%{_metainfodir}/*.metainfo.xml
 
 
 %changelog
