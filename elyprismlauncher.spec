@@ -23,7 +23,7 @@
 %endif
 
 Name:             elyprismlauncher
-Version:          10.0.1
+Version:          10.0.2
 Release:          1
 
 License:          GPL-3.0-only AND Apache-2.0 AND LGPL-3.0-only AND OFL-1.1 AND LGPL-2.1 AND MIT AND BSD-3-Clause
