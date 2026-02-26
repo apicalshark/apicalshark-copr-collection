@@ -2,7 +2,7 @@
 
 Name:           nautilus-admin
 Version:        1.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Extension for Nautilus to do administrative operations
 
 License:        GPL-3.0
@@ -34,7 +34,7 @@ You can use `nautilus -q` command.
 
 
 %build
-%cmake -DGEDIT_PATH=%{_bindir}/gnome-text-editor -DNAUTILUS_PATH=%{_bindir}/nautilus
+%cmake -DGEDIT_PATH=%{_bindir}/gnome-text-editor -DNAUTILUS_PATH=%{_bindir}/nautilus -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 %cmake_build
 
 
