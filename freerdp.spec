@@ -22,7 +22,7 @@
 #global _with_webview 1
 
 Name:           freerdp
-Epoch:          1
+Epoch:          2
 Version:        3.24.0
 Release:        1%{?dist}
 Summary:        Free implementation of the Remote Desktop Protocol (RDP)
@@ -38,8 +38,7 @@ URL:            http://www.freerdp.com/
 # The license of the winpr/libwinpr/crt/unicode_builtin.c file is not allowed.
 # See: https://gitlab.com/fedora/legal/fedora-license-data/-/issues/498
 # Run the ./freerdp_download_and_repack.sh script to prepare tarball.
-Source0:        FreeRDP-%{version}-repack.tar.gz
-Source1:        freerdp_download_and_repack.sh
+Source0:        https://github.com/FreeRDP/FreeRDP/archive/%{version}/FreeRDP-%{version}.tar.gz
 
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
@@ -359,6 +358,9 @@ find %{buildroot} -name "*.a" -delete
 %{_libdir}/pkgconfig/winpr-tools3.pc
 
 %changelog
+* Fri Mar 13 2026 ApicalShark <dennyxbox890@gmail.com> - 2:3.24.0-1
+- Update to 3.24.0
+
 * Wed Feb 25 2026 Neal Gompa <ngompa@fedoraproject.org> - 2:3.23.0-1
 - Update to 3.23.0 (CVE-2026-26965, CVE-2026-26955, CVE-2026-26271,
   CVE-2026-25997, CVE-2026-25959, CVE-2026-25955, CVE-2026-25954,
