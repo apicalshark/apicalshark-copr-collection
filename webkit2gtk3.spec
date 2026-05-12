@@ -1,18 +1,18 @@
-Name:           webkitgtk3
+Name:           webkit2gtk3
 Version:        2.99.99
 Release:        99.placeholder%{?dist}
-Summary:        Fake placeholder for webkitgtk3 to satisfy dependencies
+Summary:        Fake placeholder for webkit2gtk3 to satisfy dependencies
 License:        WTFPL
 BuildArch:      noarch
 
-Provides:       webkitgtk3 = %{version}-%{release}
+Provides:       webkit2gtk3 = %{version}-%{release}
 
 # Dont fuck with real things.
 # Provides:       libwebkitgtk-3.0.so.0()(64bit)
 # Provides:       pkgconfig(webkitgtk-3.0)
 
 %description
-This is a fake placeholder package for webkitgtk3. It contains no files 
+This is a fake placeholder package for webkit2gtk3. It contains no files 
 and does not install any libraries. It exists solely to satisfy 
 RPM dependency requirements for other software.
 
@@ -25,7 +25,7 @@ RPM dependency requirements for other software.
 %install
 # Create a dummy directory so the build doesn't fail for being empty
 mkdir -p %{buildroot}%{_docdir}/%{name}
-echo "This is a placeholder webkitgtk3 package. " > %{buildroot}%{_docdir}/%{name}/README
+echo "This is a placeholder webkit2gtk3 package. " > %{buildroot}%{_docdir}/%{name}/README
 
 %files
 %{_docdir}/%{name}/README
