@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name: vpngate-gtk
-Version: 0.0.1.3
-Release: 3
+Version: 0.0.1.4
+Release: 1
 Summary: VPN Gate GTK4 Client
 License: GPLv3
 URL: https://github.com/apicalshark/vpngate-gtk
