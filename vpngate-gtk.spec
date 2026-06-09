@@ -2,7 +2,7 @@
 
 Name: vpngate-gtk
 Version: 0.0.1.3
-Release: 2
+Release: 3
 Summary: VPN Gate GTK4 Client
 License: GPLv3
 URL: https://github.com/apicalshark/vpngate-gtk
@@ -20,6 +20,7 @@ BuildRequires: python3-gobject
 Requires: python3
 Requires: python3-requests
 Requires: python3-gobject
+Requires: python3-trayer
 Requires: libadwaita
 Requires: NetworkManager-openvpn
 Requires: openvpn
