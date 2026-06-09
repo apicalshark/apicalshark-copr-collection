@@ -1,5 +1,5 @@
 Name: vpngate-gtk
-Version: 0.0.1
+Version: 0.0.1.1
 Release: 1
 Summary: VPN Gate GTK4 Client
 License: GPLv3
