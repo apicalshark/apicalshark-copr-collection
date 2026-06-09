@@ -1,3 +1,5 @@
+%global debug_package %{nil}
+
 Name: vpngate-gtk
 Version: 0.0.1.1
 Release: 1
