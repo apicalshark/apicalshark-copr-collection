@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=VPN Gate Client
+Comment=Browse and connect to free VPN Gate servers
+Exec=vpngate-gtk
+Icon=vpngate-gtk
+Terminal=false
+Type=Application
+Categories=Network;FileTransfer;
+StartupNotify=true
