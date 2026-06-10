@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name: vpngate-gtk
-Version: 0.0.1.5
+Version: 0.0.1.6
 Release: 1
 Summary: VPN Gate GTK4 Client
 License: GPLv3
