@@ -44,7 +44,7 @@
 
 Name:           eden
 Version:        0.2.1
-Release:        1
+Release:        2
 Summary:        NS emulator/debugger
 
 License:        GPL-3.0-or-later
@@ -53,69 +53,78 @@ Source0:        https://git.eden-emu.dev/eden-emu/eden/archive/v%{version}.tar.g
 Source1:        https://github.com/Eden-CI/PGO/releases/download/v020525/eden.profdata
 Source2:        https://github.com/lat9nq/tzdb_to_nx/releases/download/221202/221202.zip
 
-BuildRequires:  alsa-lib-devel
 BuildRequires:  boost-devel >= 1.75.0
 BuildRequires:  cmake >= 3.22
 BuildRequires:  doxygen
 BuildRequires:  enet-devel
-
-BuildRequires:  fmt-devel >= 8.0.1
+BuildRequires:  gcc
+BuildRequires:  gcc-c++
 BuildRequires:  clang
 BuildRequires:  lld
 BuildRequires:  glslang
 BuildRequires:  graphviz
 BuildRequires:  hidapi-devel
 BuildRequires:  hicolor-icon-theme
-BuildRequires:  jack-audio-connection-kit-devel
-BuildRequires:  libusb1-devel
-BuildRequires:  libva-devel
-BuildRequires:  libXext-devel
-BuildRequires:  libxml2-devel
-BuildRequires:  libzip-devel
-BuildRequires:  libzstd-devel
-BuildRequires:  llvm-devel
-BuildRequires:  lz4-devel
 BuildRequires:  mold
 BuildRequires:  nasm
-BuildRequires:  ncurses-devel
-BuildRequires:  nettle-devel
 BuildRequires:  ninja-build
-BuildRequires:  libdrm-devel
-BuildRequires:  json-devel >= 3.8
-BuildRequires:  openssl-devel
-BuildRequires:  opus-devel
-BuildRequires:  pcre2-devel
-BuildRequires:  pulseaudio-libs-devel
-BuildRequires:  libshaderc-devel
-BuildRequires:  speexdsp-devel
-BuildRequires:  SDL2-devel >= 2.0.18
 BuildRequires:  unzip
 BuildRequires:  vulkan-loader-devel >= 1.3.274
 BuildRequires:  vulkan-utility-libraries-devel
-BuildRequires:  wayland-devel
-BuildRequires:  zlib-devel
-
-# Qt
-BuildRequires:  qt6-qtbase-devel
-BuildRequires:  qt6-qtbase-private-devel
-BuildRequires:  qt6-qtcharts-devel
-BuildRequires:  qt6-linguist
-BuildRequires:  qt6-qtmultimedia-devel
-BuildRequires:  qt6-qtwebengine-devel
+BuildRequires:  VulkanMemoryAllocator-devel
 BuildRequires:  quazip-qt6-devel
-
-# Build tools needed by external CPM dependencies
 BuildRequires:  autoconf
 BuildRequires:  libtool
-BuildRequires:  cmake(SPIRV-Headers)
-BuildRequires:  cmake(SPIRV-Tools)
 BuildRequires:  jq
-BuildRequires:  pkgconfig(gamemode)
-BuildRequires:  pkgconfig(libudev)
 BuildRequires:  stb_image-devel
 BuildRequires:  stb_image_write-devel
 BuildRequires:  stb_image_resize-devel
-BuildRequires:  VulkanMemoryAllocator-devel
+
+# pkgconfig deps
+BuildRequires:  pkgconfig(alsa)
+BuildRequires:  pkgconfig(gamemode)
+BuildRequires:  pkgconfig(jack)
+BuildRequires:  pkgconfig(libdrm)
+BuildRequires:  pkgconfig(libpcre2-8)
+BuildRequires:  pkgconfig(libpulse)
+BuildRequires:  pkgconfig(libusb)
+BuildRequires:  pkgconfig(libudev)
+BuildRequires:  pkgconfig(libva)
+BuildRequires:  pkgconfig(libxml-2.0)
+BuildRequires:  pkgconfig(libzip)
+BuildRequires:  pkgconfig(libzstd)
+BuildRequires:  pkgconfig(liblz4)
+BuildRequires:  pkgconfig(ncurses)
+BuildRequires:  pkgconfig(nettle)
+BuildRequires:  pkgconfig(openssl)
+BuildRequires:  pkgconfig(opus)
+BuildRequires:  pkgconfig(shaderc)
+BuildRequires:  pkgconfig(speexdsp)
+BuildRequires:  pkgconfig(wayland-client)
+BuildRequires:  pkgconfig(xext)
+
+# cmake deps
+BuildRequires:  cmake(LLVM)
+BuildRequires:  cmake(SDL2)
+BuildRequires:  cmake(SPIRV-Headers)
+BuildRequires:  cmake(SPIRV-Tools)
+BuildRequires:  cmake(fmt)
+BuildRequires:  cmake(nlohmann_json)
+BuildRequires:  cmake(zlib)
+
+# Qt6
+BuildRequires:  cmake(Qt6)
+BuildRequires:  cmake(Qt6Core)
+BuildRequires:  cmake(Qt6Concurrent)
+BuildRequires:  cmake(Qt6DBus)
+BuildRequires:  cmake(Qt6Gui)
+BuildRequires:  cmake(Qt6GuiPrivate)
+BuildRequires:  cmake(Qt6Widgets)
+BuildRequires:  cmake(Qt6LinguistTools)
+BuildRequires:  cmake(Qt6Multimedia)
+BuildRequires:  cmake(Qt6WebEngineCore)
+BuildRequires:  cmake(Qt6WebEngineWidgets)
+BuildRequires:  cmake(Qt6Charts)
 
 Requires:       gamemode
 
