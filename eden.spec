@@ -50,7 +50,6 @@ URL:            https://eden-emu.dev/
 Source0:        https://git.eden-emu.dev/eden-emu/eden/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 Source1:        https://github.com/lat9nq/tzdb_to_nx/releases/download/221202/221202.zip
 
-BuildRequires:  rpmfusion-free-release
 BuildRequires:  alsa-lib-devel
 BuildRequires:  boost-devel >= 1.75.0
 BuildRequires:  cmake >= 3.22
@@ -104,6 +103,17 @@ BuildRequires:  quazip-qt6-devel
 # Build tools needed by external CPM dependencies
 BuildRequires:  autoconf
 BuildRequires:  libtool
+BuildRequires:  cmake(SPIRV-Headers)
+BuildRequires:  cmake(SPIRV-Tools)
+BuildRequires:  jq
+BuildRequires:  pkgconfig(gamemode)
+BuildRequires:  pkgconfig(libudev)
+BuildRequires:  stb_image-devel
+BuildRequires:  stb_image_write-devel
+BuildRequires:  stb_image_resize-devel
+BuildRequires:  VulkanMemoryAllocator-devel
+
+Requires:       gamemode
 
 ExclusiveArch:  x86_64 aarch64
 
@@ -128,11 +138,15 @@ src/common/scm_rev.cpp.in
 ulimit -n 2048
 
 %cmake \
+        -GNinja \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_IGNORE_PATH=/home/linuxbrew/.linuxbrew \
         -DENABLE_QT_TRANSLATION=ON \
-        -DYUZU_ENABLE_COMPATIBILITY_REPORTING=ON \
-        -DYUZU_ENABLE_LTO=ON \
+        -DENABLE_LTO=ON \
+        -DDYNARMIC_ENABLE_LTO=ON \
+        -DUSE_DISCORD_PRESENCE=ON \
+        -DUSE_FASTER_LINKER=ON \
+        -Dhttplib_FORCE_BUNDLED=ON \
         -DYUZU_USE_BUNDLED_SDL2=OFF \
         -DYUZU_USE_EXTERNAL_SDL2=OFF \
         -DYUZU_USE_BUNDLED_FFMPEG=OFF \
@@ -140,7 +154,10 @@ ulimit -n 2048
         -DYUZU_USE_QT_WEB_ENGINE=ON \
         -DYUZU_BUILD_PRESET=%{eden_build_preset} \
         -DYUZU_TESTS=%{?with_tests:ON}%{!?with_tests:OFF} \
-        -DUSE_CCACHE=OFF
+        -DDYNARMIC_TESTS=OFF \
+        -DBUILD_TESTING=OFF \
+        -DUSE_CCACHE=OFF \
+        -Wno-dev
 
 %cmake_build
 
