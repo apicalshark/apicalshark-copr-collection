@@ -44,7 +44,7 @@
 
 Name:           eden
 Version:        0.2.1
-Release:        2
+Release:        3
 Summary:        NS emulator/debugger
 
 License:        GPL-3.0-or-later
@@ -79,6 +79,7 @@ BuildRequires:  jq
 BuildRequires:  stb_image-devel
 BuildRequires:  stb_image_write-devel
 BuildRequires:  stb_image_resize-devel
+BuildRequires:  libvdpau-devel
 
 # pkgconfig deps
 BuildRequires:  pkgconfig(alsa)
