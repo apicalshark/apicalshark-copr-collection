@@ -58,7 +58,7 @@ BuildRequires:  boost-devel >= 1.75.0
 BuildRequires:  cmake >= 3.22
 BuildRequires:  doxygen
 BuildRequires:  enet-devel
-BuildRequires:  ffmpeg-devel
+
 BuildRequires:  fmt-devel >= 8.0.1
 BuildRequires:  clang
 BuildRequires:  lld
@@ -152,7 +152,7 @@ ulimit -n 2048
         -Dhttplib_FORCE_BUNDLED=ON \
         -DYUZU_USE_BUNDLED_SDL2=OFF \
         -DYUZU_USE_EXTERNAL_SDL2=OFF \
-        -DYUZU_USE_BUNDLED_FFMPEG=OFF \
+        -DYUZU_USE_BUNDLED_FFMPEG=ON \
         -DYUZU_USE_QT_MULTIMEDIA=ON \
         -DYUZU_USE_QT_WEB_ENGINE=ON \
         -DYUZU_BUILD_PRESET=%{eden_build_preset} \
