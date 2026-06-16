@@ -50,6 +50,7 @@ URL:            https://eden-emu.dev/
 Source0:        https://git.eden-emu.dev/eden-emu/eden/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 Source1:        https://github.com/lat9nq/tzdb_to_nx/releases/download/221202/221202.zip
 
+BuildRequires:  rpmfusion-free-release
 BuildRequires:  alsa-lib-devel
 BuildRequires:  boost-devel >= 1.75.0
 BuildRequires:  cmake >= 3.22
