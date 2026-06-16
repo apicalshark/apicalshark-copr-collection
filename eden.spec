@@ -80,6 +80,7 @@ BuildRequires:  nasm
 BuildRequires:  ncurses-devel
 BuildRequires:  nettle-devel
 BuildRequires:  ninja-build
+BuildRequires:  libdrm-devel
 BuildRequires:  json-devel >= 3.8
 BuildRequires:  openssl-devel
 BuildRequires:  opus-devel
