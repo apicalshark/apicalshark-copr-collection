@@ -8,7 +8,6 @@ License: GPLv3
 URL: https://github.com/apicalshark/vpngate-gtk
 Source0: https://github.com/apicalshark/vpngate-gtk/archive/refs/tags/v%{version}.tar.gz
 Source1: vpngate-gtk.sh
-Source2: vpngate-cli.sh
 Source3: vpngate-gtk.desktop
 
 BuildRequires: python3
@@ -43,8 +42,6 @@ cp -r . %{buildroot}%{_datadir}/vpngate-gtk/
 mkdir -p %{buildroot}%{_bindir}
 cp %{SOURCE1} %{buildroot}%{_bindir}/vpngate-gtk
 chmod 755 %{buildroot}%{_bindir}/vpngate-gtk
-cp %{SOURCE2} %{buildroot}%{_bindir}/vpngate-cli
-chmod 755 %{buildroot}%{_bindir}/vpngate-cli
 
 mkdir -p %{buildroot}%{_datadir}/applications
 cp %{SOURCE3} %{buildroot}%{_datadir}/applications/vpngate-gtk.desktop
@@ -57,7 +54,6 @@ done
 %files
 %{_datadir}/vpngate-gtk/
 %{_bindir}/vpngate-gtk
-%{_bindir}/vpngate-cli
 %{_datadir}/applications/vpngate-gtk.desktop
 %{_datadir}/icons/hicolor/*/apps/vpngate-gtk.png
 
