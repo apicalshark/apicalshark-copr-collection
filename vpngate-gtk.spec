@@ -16,7 +16,6 @@ BuildRequires: python3-devel
 BuildRequires: python3-requests
 BuildRequires: libadwaita-devel
 BuildRequires: python3-gobject
-BuildRequires: appstream
 BuildRequires: libappstream-glib
 
 Requires: python3
