@@ -8,4 +8,4 @@ for pyc in "$APP_DIR"/__pycache__/main.*.pyc "$APP_DIR"/main.*.pyc; do
   fi
 done
 
-# PYTHONPATH="$APP_DIR" exec "$PYTHON" "$APP_DIR/main.py" "$@"
+PYTHONPATH="$APP_DIR" exec "$PYTHON" "$APP_DIR/main.py" "$@"

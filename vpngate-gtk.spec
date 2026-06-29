@@ -40,7 +40,6 @@ API and the api.ovpn.pw fallback source.
 %install
 mkdir -p %{buildroot}%{_datadir}/vpngate-gtk
 cp -r . %{buildroot}%{_datadir}/vpngate-gtk/
-find %{buildroot}%{_datadir}/vpngate-gtk -name '*.py' -delete
 
 mkdir -p %{buildroot}%{_bindir}
 cp %{SOURCE1} %{buildroot}%{_bindir}/vpngate-gtk
