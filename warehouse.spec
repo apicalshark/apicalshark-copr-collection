@@ -1,6 +1,6 @@
 Name:           warehouse
 Version:        2.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Manage all things Flatpak
 
 License:        GPL-3.0-only
@@ -65,6 +65,9 @@ sed -i 's|custom_install_config_path = "/run/host/etc/flatpak/installations.d"|c
 
 %install
 %meson_install
+# Upstream installs bindir script as r-xr--r-- (544): only owner can
+# execute, normal users get "Permission denied". Fix to 755.
+chmod 755 %{buildroot}%{_bindir}/warehouse
 %find_lang warehouse
 
 
