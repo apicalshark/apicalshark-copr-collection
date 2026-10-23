@@ -30,20 +30,29 @@ Each application is written in Rust, built with `cargo`, and packaged following 
 
 The project is hosted in Fedora Copr under **`apicalshark/artcraft-suites`**, targeting **Fedora 44, 45, and Rawhide** on both **x86_64** and **aarch64**.
 
-### 1. One-Click Mass Submission with `submit_to_copr.sh`
+### 1. One-Click Mass Submission & Direct SCM Trigger
 
-The `./submit_to_copr.sh` script automates registering and building all 13 packages:
+Two scripts are provided for Copr management:
 
-```bash
-# Register all 13 packages into apicalshark/artcraft-suites (default):
-./submit_to_copr.sh
+- **`trigger_build.sh`** — Directly trigger SCM builds using Git and spec files:
+  ```bash
+  # Trigger build for a single spec:
+  ./trigger_build.sh photocraft.spec
 
-# Register AND immediately queue builds across all 6 chroots:
-./submit_to_copr.sh --build
+  # Trigger builds for multiple specs:
+  ./trigger_build.sh photocraft deckcraft soundcraft
 
-# Queue builds for specific chroots:
-./submit_to_copr.sh --build --chroots "fedora-44-x86_64,fedora-rawhide-x86_64"
-```
+  # Trigger builds for all 13 specs across all chroots:
+  ./trigger_build.sh --all
+
+  # Target specific chroots and watch progress:
+  ./trigger_build.sh photocraft --chroots fedora-44-x86_64 --watch
+  ```
+
+- **`submit_to_copr.sh`** — Register and configure all 13 SCM packages in Copr with auto-rebuild webhooks enabled:
+  ```bash
+  ./submit_to_copr.sh
+  ```
 
 ### 2. Manual Copr Project Configuration
 
