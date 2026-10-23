@@ -2,15 +2,18 @@
 %define debug_package %{nil}
 
 %global app_id ai.storyteller.cadcraft
+%global craft_fonts_commit 3d9ab3a132ed0eff457e424226a435a901da30d3
+%global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           cadcraft
 Version:        0.12.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source native CAD and drafting application built in Rust
 
-License:        MIT OR Apache-2.0
+License:        (MIT OR Apache-2.0) AND OFL-1.1
 URL:            https://github.com/storytold/cadcraft
 Source0:        %{url}/archive/refs/tags/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source1:        https://github.com/storytold/craft-fonts/archive/%{craft_fonts_commit}/craft-fonts-%{craft_fonts_short}.tar.gz
 
 BuildRequires:  cargo
 BuildRequires:  rust >= 1.90
@@ -43,11 +46,14 @@ converting drawings, running scripts, exporting files and serving an MCP
 endpoint.
 
 %prep
-%autosetup -n %{name}-%{version}
+%autosetup -n %{name}-%{version} -a 1
+mv craft-fonts-%{craft_fonts_commit} craft-fonts
 
 %build
 export CARGO_HOME=$PWD/.cargo-home
 export RUSTFLAGS="%{?build_rustflags}"
+export CRAFT_FONTS_DIR=$PWD/craft-fonts
+export CRAFT_FONTS_REQUIRED=1
 export CADCRAFT_BUILD_DATE=$(date -u -d "@${SOURCE_DATE_EPOCH:-$(date +%%s)}" +%%F)
 cargo build --release --locked -p cadcraft -p cadcraft-cli
 
@@ -63,13 +69,16 @@ sed -e 's/@VERSION@/%{version}/g' \
     > %{buildroot}%{_metainfodir}/%{app_id}.metainfo.xml
 install -d %{buildroot}%{_datadir}/icons
 cp -a assets/app-icon/hicolor %{buildroot}%{_datadir}/icons/
+for f in craft-fonts/fonts/*/OFL.txt; do
+    cp -p "$f" "OFL-$(basename "$(dirname "$f")").txt"
+done
 
 %check
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
 appstreamcli validate --no-net %{buildroot}%{_metainfodir}/%{app_id}.metainfo.xml
 
 %files
-%license LICENSE-APACHE LICENSE-MIT
+%license LICENSE-APACHE LICENSE-MIT OFL-*.txt
 %doc README.md
 %{_bindir}/cadcraft
 %{_bindir}/cadcraft-cli

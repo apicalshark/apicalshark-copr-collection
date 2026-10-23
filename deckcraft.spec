@@ -2,15 +2,18 @@
 %define debug_package %{nil}
 
 %global app_id ai.storyteller.deckcraft
+%global craft_fonts_commit 43913056ce82a3fdad0ef69f6b88d1dc922a8104
+%global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           deckcraft
 Version:        0.10.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source native presentation and slide designer built in Rust
 
-License:        MIT OR Apache-2.0
+License:        (MIT OR Apache-2.0) AND OFL-1.1
 URL:            https://github.com/storytold/deckcraft
 Source0:        %{url}/archive/refs/tags/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source1:        https://github.com/storytold/craft-fonts/archive/%{craft_fonts_commit}/craft-fonts-%{craft_fonts_short}.tar.gz
 
 BuildRequires:  cargo
 BuildRequires:  rust >= 1.95
@@ -45,11 +48,14 @@ converting decks, running command scripts, inspecting files and serving an MCP
 endpoint.
 
 %prep
-%autosetup -n %{name}-%{version}
+%autosetup -n %{name}-%{version} -a 1
+mv craft-fonts-%{craft_fonts_commit} craft-fonts
 
 %build
 export CARGO_HOME=$PWD/.cargo-home
 export RUSTFLAGS="%{?build_rustflags}"
+export CRAFT_FONTS_DIR=$PWD/craft-fonts
+export CRAFT_FONTS_REQUIRED=1
 cargo build --release --locked -p deckcraft -p deckcraft-cli
 
 %install
@@ -64,13 +70,16 @@ sed -e 's/@VERSION@/%{version}/g' \
     > %{buildroot}%{_metainfodir}/%{app_id}.metainfo.xml
 install -d %{buildroot}%{_datadir}/icons
 cp -a assets/app-icon/hicolor %{buildroot}%{_datadir}/icons/
+for f in craft-fonts/fonts/*/OFL.txt; do
+    cp -p "$f" "OFL-$(basename "$(dirname "$f")").txt"
+done
 
 %check
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{app_id}.desktop
 appstreamcli validate --no-net %{buildroot}%{_metainfodir}/%{app_id}.metainfo.xml
 
 %files
-%license LICENSE-APACHE LICENSE-MIT
+%license LICENSE-APACHE LICENSE-MIT OFL-*.txt
 %doc README.md
 %{_bindir}/deckcraft
 %{_bindir}/deckcraft-cli
