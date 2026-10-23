@@ -163,16 +163,18 @@ for app in "${APPS[@]}"; do
       --clone-url "$REPO_URL" \
       --commit "$BRANCH" \
       --spec "$spec_file" \
-      --method rpkg &>/dev/null; then
-    echo "created"
+      --method rpkg \
+      --webhook-rebuild on &>/dev/null; then
+    echo "created (webhook trigger: on)"
   else
     copr-cli edit-package-scm "$PROJECT" \
       --name "$app" \
       --clone-url "$REPO_URL" \
       --commit "$BRANCH" \
       --spec "$spec_file" \
-      --method rpkg &>/dev/null
-    echo "updated"
+      --method rpkg \
+      --webhook-rebuild on &>/dev/null
+    echo "updated (webhook trigger: on)"
   fi
 done
 
