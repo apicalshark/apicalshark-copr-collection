@@ -1,1 +1,104 @@
-# personal spec collection
+# Artcraft RPM Spec Collection
+
+This repository contains RPM spec files and utilities for packaging the complete [Artcraft suite](https://github.com/storytold) of native creative applications for Fedora Linux via [Fedora Copr](https://copr.fedorainfracloud.org/).
+
+Each application is written in Rust, built with `cargo`, and packaged following modern Fedora packaging standards, including AppStream metadata validation and desktop file verification.
+
+---
+
+## Artcraft Suite Applications
+
+| Application | Spec File | Version | App ID | Description |
+| ----------- | --------- | ------- | ------ | ----------- |
+| **Photocraft** | `photocraft.spec` | `0.14.0` | `ai.storyteller.photocraft` | Open-source native image editor |
+| **PDFcraft** | `pdfcraft.spec` | `0.13.0` | `ai.storyteller.pdfcraft` | Open-source native PDF reader and editor |
+| **Filmcraft** | `filmcraft.spec` | `0.12.0` | `ai.storyteller.filmcraft` | Open-source native non-linear video editor |
+| **Wordcraft** | `wordcraft.spec` | `0.10.0` | `ai.storyteller.wordcraft` | Open-source native word processor |
+| **Lightcraft** | `lightcraft.spec` | `0.13.0` | `ai.storyteller.lightcraft` | Open-source native photo library and raw developer |
+| **Vectorcraft** | `vectorcraft.spec` | `0.16.0` | `ai.storyteller.vectorcraft` | Open-source native vector illustration editor |
+| **Effectcraft** | `effectcraft.spec` | `0.16.0` | `ai.storyteller.effectcraft` | Open-source native motion graphics and visual effects compositor |
+| **CADcraft** | `cadcraft.spec` | `0.12.0` | `ai.storyteller.cadcraft` | Open-source native CAD and drafting application |
+| **Gridcraft** | `gridcraft.spec` | `0.11.1` | `ai.storyteller.gridcraft` | Open-source native spreadsheet application |
+| **Designcraft** | `designcraft.spec` | `0.12.0` | `ai.storyteller.designcraft` | Open-source native desktop publishing and page layout application |
+| **Deckcraft** | `deckcraft.spec` | `0.10.0` | `ai.storyteller.deckcraft` | Open-source native presentation and slide designer |
+| **Soundcraft** | `soundcraft.spec` | `0.12.1` | `ai.storyteller.soundcraft` | Open-source native digital audio workstation |
+| **Figcraft** | `figcraft.spec` | `0.10.0` | `ai.storyteller.figcraft` | Open-source native interface design and prototyping application |
+
+---
+
+## Fedora Copr Project Configuration
+
+When setting up builds in Fedora Copr:
+
+1. **SCM Build Method**:
+   - Point your Copr package build source to this Git repository.
+   - Specify the corresponding spec file for each package (e.g., `photocraft.spec`, `deckcraft.spec`).
+
+2. **Network Access Requirement**:
+   > **IMPORTANT**: In your Copr project settings, ensure that **"Enable internet access during build"** is checked.
+   > 
+   > The Artcraft applications are written in Rust and Cargo resolves dependencies from crates.io and GitHub at compile time during `%build`. Without network access in the build chroot, Cargo will fail during dependency fetching.
+
+---
+
+## Local Building & Testing Workflow
+
+### 1. Prerequisites
+
+Install the required RPM packaging and build tools:
+
+```bash
+sudo dnf install rpkg spectool rpmlint cargo rust gcc gcc-c++ desktop-file-utils appstream
+```
+
+### 2. Downloading Sources
+
+Download the upstream release tarball for a given spec file using `spectool`:
+
+```bash
+spectool -g -S deckcraft.spec
+```
+
+### 3. Validating Spec Files
+
+Check all spec files or a specific spec file for packaging errors and warnings using `rpmlint`:
+
+```bash
+# Lint all spec files
+rpmlint *.spec
+
+# Lint a single spec
+rpmlint deckcraft.spec
+```
+
+### 4. Building Locally
+
+Build an RPM package locally in your environment using `rpkg`:
+
+```bash
+rpkg local --spec deckcraft.spec
+```
+
+---
+
+## Using `fetch_things.sh`
+
+The included `fetch_things.sh` helper utility provides quick tools to query upstream GitHub releases, verify archive URLs, and download sources.
+
+- **Check version alignment between GitHub and local specs**:
+  ```bash
+  ./fetch_things.sh --versions
+  ```
+  Lists upstream GitHub latest releases, current spec versions, and status (`ok` or `outdated`).
+
+- **Verify all upstream archives and spec alignment**:
+  ```bash
+  ./fetch_things.sh --check
+  ```
+  Performs HTTP HEAD requests against all 13 GitHub source tarballs and checks that specs match.
+
+- **Download source tarball for an application**:
+  ```bash
+  ./fetch_things.sh --download deckcraft
+  ```
+  Fetches the corresponding source archive directly into the current directory.
