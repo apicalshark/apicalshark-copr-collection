@@ -1,21 +1,24 @@
 #!/usr/bin/env bash
-# submit_to_copr.sh — Mass-register and submit all 13 Artcraft packages to Fedora Copr.
+# submit_to_copr.sh — Automated registration and build submission for Artcraft suite in Fedora Copr.
 #
-# Requirements:
-#   1. copr-cli installed (`sudo dnf install copr-cli`)
-#   2. Valid API token configured in ~/.config/copr (get from https://copr.fedorainfracloud.org/api/)
-#   3. The Git branch containing the specs must be pushed to GitHub:
-#        git push -u origin artcraft
+# Defaults:
+#   Project:  artcraft-suites
+#   Branch:   artcraft
+#   Chroots:  fedora-44-x86_64, fedora-44-aarch64, fedora-45-x86_64,
+#             fedora-45-aarch64, fedora-rawhide-x86_64, fedora-rawhide-aarch64
 #
 # Usage:
-#   ./submit_to_copr.sh <copr_project_name> [--build] [--branch <branch_name>]
+#   ./submit_to_copr.sh [project_name] [--build] [--branch <name>] [--chroots "<list>"]
 #
 # Examples:
-#   # Register all 13 packages under project 'artcraft':
-#   ./submit_to_copr.sh artcraft
+#   # Register all 13 packages in artcraft-suites:
+#   ./submit_to_copr.sh
 #
-#   # Register and immediately trigger builds:
-#   ./submit_to_copr.sh artcraft --build
+#   # Register and immediately trigger builds for all chroots:
+#   ./submit_to_copr.sh --build
+#
+#   # Build for specific chroots:
+#   ./submit_to_copr.sh --build --chroots "fedora-44-x86_64,fedora-rawhide-x86_64"
 
 set -euo pipefail
 
@@ -35,11 +38,24 @@ APPS=(
   figcraft
 )
 
+DEFAULT_PROJECT="artcraft-suites"
+DEFAULT_BRANCH="artcraft"
 DEFAULT_REPO_URL="https://github.com/apicalshark/apicalshark-copr-collection.git"
+
+DEFAULT_CHROOTS=(
+  fedora-44-x86_64
+  fedora-44-aarch64
+  fedora-45-x86_64
+  fedora-45-aarch64
+  fedora-rawhide-x86_64
+  fedora-rawhide-aarch64
+)
+
+PROJECT="$DEFAULT_PROJECT"
+BRANCH="$DEFAULT_BRANCH"
 REPO_URL="${COPR_REPO_URL:-$DEFAULT_REPO_URL}"
-BRANCH="artcraft"
 BUILD_NOW=0
-PROJECT=""
+CUSTOM_CHROOTS=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -55,12 +71,16 @@ while [ $# -gt 0 ]; do
       REPO_URL="$2"
       shift 2
       ;;
+    --chroots)
+      CUSTOM_CHROOTS="$2"
+      shift 2
+      ;;
     -h|--help)
       sed -n '2,17p' "$0"
       exit 0
       ;;
     *)
-      if [ -z "$PROJECT" ]; then
+      if [ "$PROJECT" = "$DEFAULT_PROJECT" ] && [[ ! "$1" =~ ^-- ]]; then
         PROJECT="$1"
         shift
       else
@@ -70,12 +90,6 @@ while [ $# -gt 0 ]; do
       ;;
   esac
 done
-
-if [ -z "$PROJECT" ]; then
-  echo "Error: Copr project name is required." >&2
-  echo "Usage: $0 <project_name> [--build] [--branch <branch>]" >&2
-  exit 1
-fi
 
 # 1. Check copr-cli installation
 if ! command -v copr-cli &>/dev/null; then
@@ -87,12 +101,8 @@ fi
 # 2. Check authentication
 echo "Checking Copr authentication..."
 if ! copr-cli whoami &>/dev/null; then
-  echo "Error: copr-cli is not configured or authenticated." >&2
-  echo ""
-  echo "Please set up your API credentials:"
-  echo "  1. Log into https://copr.fedorainfracloud.org/api/"
-  echo "  2. Copy the configuration block and paste it into ~/.config/copr"
-  echo "  3. Re-run this script."
+  echo "Error: copr-cli is not authenticated." >&2
+  echo "Please configure your API token in ~/.config/copr." >&2
   exit 1
 fi
 
@@ -103,26 +113,51 @@ echo "Git Clone URL:    $REPO_URL"
 echo "Git Branch:       $BRANCH"
 echo ""
 
-# 3. Inform about network access requirement
-echo "========================================================================"
-echo "IMPORTANT COPR CONFIGURATION REMINDER:"
-echo "In Copr Settings -> Build options, ensure 'Enable internet access"
-echo "during build' is ON. Cargo needs network access to resolve dependencies."
-echo "========================================================================"
+# 3. Ensure Project Exists with Required Chroots and Internet Enabled
+if ! copr-cli get "$PROJECT" &>/dev/null; then
+  echo "Project '$PROJECT' does not exist yet. Creating project with target chroots and network enabled..."
+  create_cmd=(copr-cli create "$PROJECT" --enable-net on)
+  for chroot in "${DEFAULT_CHROOTS[@]}"; do
+    create_cmd+=(--chroot "$chroot")
+  done
+  create_cmd+=(--description "Storytold Artcraft Suite: Photocraft, Filmcraft, Soundcraft, Deckcraft, Figcraft, etc.")
+  create_cmd+=(--instructions "sudo dnf copr enable ${USER_NAME}/${PROJECT} && sudo dnf install photocraft")
+  
+  "${create_cmd[@]}"
+  echo "Project '$PROJECT' created successfully!"
+else
+  echo "Project '$PROJECT' exists. Verifying configuration..."
+  # Ensure net is on and required chroots are enabled
+  modify_cmd=(copr-cli modify "$PROJECT" --enable-net on)
+  for chroot in "${DEFAULT_CHROOTS[@]}"; do
+    modify_cmd+=(--chroot "$chroot")
+  done
+  "${modify_cmd[@]}" &>/dev/null || true
+  echo "Project configuration verified."
+fi
 echo ""
 
-# 4. Loop through all 13 applications and add/edit SCM package
-echo "Registering packages in Copr project '$PROJECT'..."
+# 4. Check if remote branch exists on GitHub
+echo "Verifying that branch '$BRANCH' is reachable on remote GitHub repository..."
+if ! git ls-remote --exit-code --heads "$REPO_URL" "$BRANCH" &>/dev/null; then
+  echo "Warning: Branch '$BRANCH' was not found on $REPO_URL." >&2
+  echo "Make sure to push your local branch first:" >&2
+  echo "  git push -u origin $BRANCH" >&2
+  exit 1
+fi
+echo "Branch '$BRANCH' is present on remote."
+echo ""
+
+# 5. Register/Update all 13 SCM packages
+echo "Configuring all 13 Artcraft SCM packages in Copr project '$PROJECT'..."
 for app in "${APPS[@]}"; do
   spec_file="${app}.spec"
   if [ ! -f "$spec_file" ]; then
-    echo "Warning: $spec_file not found in current directory. Skipping." >&2
+    echo "Warning: $spec_file not found in local directory. Skipping." >&2
     continue
   fi
 
   echo -n "  -> Configuring package '$app' ... "
-
-  # Try adding package; if it already exists, edit it
   if copr-cli add-package-scm "$PROJECT" \
       --name "$app" \
       --clone-url "$REPO_URL" \
@@ -142,15 +177,23 @@ for app in "${APPS[@]}"; do
 done
 
 echo ""
-echo "All 13 packages registered successfully in Copr project '$PROJECT'!"
+echo "All 13 packages registered successfully in '$PROJECT'!"
 
-# 5. Build packages if requested
+# 6. Trigger builds if requested
 if [ "$BUILD_NOW" -eq 1 ]; then
   echo ""
   echo "Submitting builds for all 13 packages..."
+  build_args=()
+  if [ -n "$CUSTOM_CHROOTS" ]; then
+    IFS=',' read -ra CHROOT_ARR <<< "$CUSTOM_CHROOTS"
+    for c in "${CHROOT_ARR[@]}"; do
+      build_args+=(--chroot "$c")
+    done
+  fi
+
   for app in "${APPS[@]}"; do
     echo -n "  -> Queuing build for '$app' ... "
-    build_out=$(copr-cli build-package "$PROJECT" --name "$app" --nowait 2>&1)
+    build_out=$(copr-cli build-package "$PROJECT" --name "$app" --nowait "${build_args[@]}" 2>&1)
     build_id=$(echo "$build_out" | grep -oE '[0-9]+' | head -n 1 || echo "submitted")
     echo "build #$build_id"
   done
@@ -159,8 +202,9 @@ if [ "$BUILD_NOW" -eq 1 ]; then
   echo "  https://copr.fedorainfracloud.org/coprs/$USER_NAME/$PROJECT/builds/"
 else
   echo ""
-  echo "To trigger builds, run:"
-  echo "  $0 $PROJECT --build"
-  echo "Or trigger individually via:"
-  echo "  copr-cli build-package $PROJECT --name <app_name>"
+  echo "To trigger builds for all packages across all target chroots:"
+  echo "  ./submit_to_copr.sh --build"
+  echo ""
+  echo "Or trigger individually:"
+  echo "  copr-cli build-package $PROJECT --name <app>"
 fi

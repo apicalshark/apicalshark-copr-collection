@@ -28,23 +28,33 @@ Each application is written in Rust, built with `cargo`, and packaged following 
 
 ## Fedora Copr Project Configuration & Mass Submission
 
+The project is hosted in Fedora Copr under **`apicalshark/artcraft-suites`**, targeting **Fedora 44, 45, and Rawhide** on both **x86_64** and **aarch64**.
+
 ### 1. One-Click Mass Submission with `submit_to_copr.sh`
 
-An automated submission script `./submit_to_copr.sh` is provided to register all 13 packages into your Copr project:
+The `./submit_to_copr.sh` script automates registering and building all 13 packages:
 
 ```bash
-# Register all 13 packages into your Copr project (e.g., 'artcraft'):
-./submit_to_copr.sh artcraft
+# Register all 13 packages into apicalshark/artcraft-suites (default):
+./submit_to_copr.sh
 
-# Register AND immediately queue builds:
-./submit_to_copr.sh artcraft --build
+# Register AND immediately queue builds across all 6 chroots:
+./submit_to_copr.sh --build
+
+# Queue builds for specific chroots:
+./submit_to_copr.sh --build --chroots "fedora-44-x86_64,fedora-rawhide-x86_64"
 ```
 
 ### 2. Manual Copr Project Configuration
 
-When setting up builds in Fedora Copr via the web UI or CLI:
+When inspecting or editing the Copr project settings:
 
-1. **Network Access Requirement**:
+1. **Target Chroots**:
+   - `fedora-44-x86_64` & `fedora-44-aarch64`
+   - `fedora-45-x86_64` & `fedora-45-aarch64`
+   - `fedora-rawhide-x86_64` & `fedora-rawhide-aarch64`
+
+2. **Network Access Requirement**:
    > **CRITICAL**: In Copr project settings (**Settings -> Build options**), ensure **"Enable internet access during build"** is checked (`--enable-net on`).
    > 
    > The Artcraft applications are written in Rust; Cargo resolves dependencies from crates.io and GitHub at compile time during `%build`. Without network access in the build chroot, the build will fail.
