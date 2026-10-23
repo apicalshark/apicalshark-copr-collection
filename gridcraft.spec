@@ -77,5 +77,4 @@ appstreamcli validate --no-net %{buildroot}%{_metainfodir}/%{app_id}.metainfo.xm
 %{_datadir}/icons/hicolor/*/apps/%{app_id}.*
 
 %changelog
-* Fri Oct 23 2026 Storytold Artcraft Packaging <packaging@storytold.ai> - 0.11.1-1
-- Initial package
+%autochangelog

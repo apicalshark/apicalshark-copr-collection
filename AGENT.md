@@ -33,6 +33,7 @@ This repository maintains compile-from-source Fedora RPM spec files for the 13 a
 ```
 .
 ├── *.spec                     # 13 RPM spec files (one per application)
+├── update_specs.sh            # Automated spec updater with nfpm change detection
 ├── fetch_things.sh            # Version checker, drift detector & source fetcher
 ├── fetch_nfpm.sh              # Mass-downloader for upstream packaging/linux/nfpm.yaml
 ├── reference/
@@ -45,7 +46,23 @@ This repository maintains compile-from-source Fedora RPM spec files for the 13 a
 
 ## 3. Maintenance Scripts
 
-### Checking Upstream Versions & Drift
+### Automated Version Updates (`update_specs.sh`)
+The primary workflow for updating specs is automated via `update_specs.sh`:
+```bash
+# Check all apps and auto-update any with new upstream releases (if nfpm.yaml unchanged):
+./update_specs.sh
+
+# Run dry-run check without modifying files:
+./update_specs.sh --dry-run
+
+# Target specific app(s):
+./update_specs.sh photocraft
+```
+**Decision Flow**:
+- **If `nfpm.yaml` is unchanged**: It updates `Version:`, keeps `%autochangelog`, updates the cached reference, and runs `rpmlint`.
+- **If `nfpm.yaml` CHANGED**: It stops, alerts with `[ACTION REQUIRED]`, prints the `nfpm.yaml` diff, and stages the new file as `reference/upstream-nfpm/<app>-nfpm.yaml.new` for the agent or user to inspect and update dependencies.
+
+### Checking Upstream Versions & Drift (`fetch_things.sh`)
 ```bash
 # Compare local spec versions against latest upstream GitHub tags:
 ./fetch_things.sh --versions
@@ -54,7 +71,7 @@ This repository maintains compile-from-source Fedora RPM spec files for the 13 a
 ./fetch_things.sh --check
 ```
 
-### Refreshing Upstream NFPM Packaging References
+### Refreshing Upstream NFPM Packaging References (`fetch_nfpm.sh`)
 Each upstream repository contains `packaging/linux/nfpm.yaml`, which specifies upstream dependencies, descriptions, and file maps.
 ```bash
 # Refresh all 13 cached nfpm.yaml files:
@@ -64,31 +81,31 @@ Cached reference files are stored in `reference/upstream-nfpm/<app>-nfpm.yaml`. 
 
 ---
 
-## 4. How to Update an Application Spec
+## 4. How to Update an Application Spec Manually (When NFPM Changes)
 
-When `./fetch_things.sh --versions` or `--check` reports that an application is outdated (`drift` or `stale`):
+When `update_specs.sh` reports `[ACTION REQUIRED]` for an application:
 
-1. **Check Upstream Release Notes & NFPM**:
+1. **Inspect the NFPM Diff**:
    ```bash
-   ./fetch_nfpm.sh
-   git diff reference/upstream-nfpm/<app>-nfpm.yaml
+   diff -u reference/upstream-nfpm/<app>-nfpm.yaml reference/upstream-nfpm/<app>-nfpm.yaml.new
    ```
    Check if upstream changed:
    - Rust MSRV (`rust-version` in `Cargo.toml`)
-   - Direct or dlopened runtime dependencies
-   - New binary targets or renamed desktop files
+   - Direct or dlopened runtime dependencies (`Requires:` or `Recommends:`)
+   - New binary targets or renamed desktop/mime files
 
 2. **Edit the Spec File (`<app>.spec`)**:
    - Update `Version: <new_version>`
    - Reset `Release: 1%{?dist}`
-   - Add a changelog entry at the bottom:
-     ```spec
-     %changelog
-     * Fri Oct 23 2026 Your Name <your.email@example.com> - <new_version>-1
-     - Update to <new_version>.
-     ```
+   - Adjust `Requires:`, `Recommends:`, or build flags if upstream changed them.
+   - Note: Changelogs use the `%autochangelog` macro, so manual changelog entries in the spec are not required.
 
-3. **Verify the Updated Spec**:
+3. **Promote the Reference File**:
+   ```bash
+   mv reference/upstream-nfpm/<app>-nfpm.yaml.new reference/upstream-nfpm/<app>-nfpm.yaml
+   ```
+
+4. **Verify the Updated Spec**:
    ```bash
    # 1. Check syntax and Fedora RPM guidelines
    rpmlint <app>.spec
@@ -98,6 +115,12 @@ When `./fetch_things.sh --versions` or `--check` reports that an application is 
 
    # 3. Verify suite status with maintenance script
    ./fetch_things.sh --check
+   ```
+
+5. **Commit Your Changes**:
+   ```bash
+   git add <app>.spec reference/upstream-nfpm/
+   git commit -m "chore(<app>): update to <new_version>"
    ```
 
 4. **Test Local Build (Optional)**:

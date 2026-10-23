@@ -81,7 +81,23 @@ rpkg local --spec deckcraft.spec
 
 ---
 
-## Using `fetch_things.sh`
+## Maintenance & Update Utilities
+
+### 1. `update_specs.sh` (Automated Version Updates)
+
+The `update_specs.sh` utility checks upstream GitHub releases and automatically updates spec files:
+- **If `packaging/linux/nfpm.yaml` is unchanged**: automatically updates `Version:`, keeps the `%autochangelog` macro, updates the reference cache, and validates via `rpmlint`.
+- **If `nfpm.yaml` has changed**: flags `[ACTION REQUIRED]`, prints the packaging diff, and stages the new file as `reference/upstream-nfpm/<app>-nfpm.yaml.new` so maintainers can update dependencies or build options manually.
+
+```bash
+# Check and auto-update all 13 specs:
+./update_specs.sh
+
+# Dry-run mode:
+./update_specs.sh --dry-run
+```
+
+### 2. `fetch_things.sh`
 
 The included `fetch_things.sh` helper utility provides quick tools to query upstream GitHub releases, verify archive URLs, and download sources.
 
@@ -89,7 +105,7 @@ The included `fetch_things.sh` helper utility provides quick tools to query upst
   ```bash
   ./fetch_things.sh --versions
   ```
-  Lists upstream GitHub latest releases, current spec versions, and status (`ok` or `outdated`).
+  Lists upstream GitHub latest releases, current spec versions, and status (`ok` or `stale`).
 
 - **Verify all upstream archives and spec alignment**:
   ```bash
@@ -102,3 +118,11 @@ The included `fetch_things.sh` helper utility provides quick tools to query upst
   ./fetch_things.sh --download deckcraft
   ```
   Fetches the corresponding source archive directly into the current directory.
+
+### 3. `fetch_nfpm.sh`
+
+Downloads the latest `packaging/linux/nfpm.yaml` for all 13 apps into `reference/upstream-nfpm/` for reference and diff detection.
+
+```bash
+./fetch_nfpm.sh
+```
