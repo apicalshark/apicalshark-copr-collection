@@ -26,18 +26,35 @@ Each application is written in Rust, built with `cargo`, and packaged following 
 
 ---
 
-## Fedora Copr Project Configuration
+## Fedora Copr Project Configuration & Mass Submission
 
-When setting up builds in Fedora Copr:
+### 1. One-Click Mass Submission with `submit_to_copr.sh`
 
-1. **SCM Build Method**:
-   - Point your Copr package build source to this Git repository.
-   - Specify the corresponding spec file for each package (e.g., `photocraft.spec`, `deckcraft.spec`).
+An automated submission script `./submit_to_copr.sh` is provided to register all 13 packages into your Copr project:
 
-2. **Network Access Requirement**:
-   > **IMPORTANT**: In your Copr project settings, ensure that **"Enable internet access during build"** is checked.
+```bash
+# Register all 13 packages into your Copr project (e.g., 'artcraft'):
+./submit_to_copr.sh artcraft
+
+# Register AND immediately queue builds:
+./submit_to_copr.sh artcraft --build
+```
+
+### 2. Manual Copr Project Configuration
+
+When setting up builds in Fedora Copr via the web UI or CLI:
+
+1. **Network Access Requirement**:
+   > **CRITICAL**: In Copr project settings (**Settings -> Build options**), ensure **"Enable internet access during build"** is checked (`--enable-net on`).
    > 
-   > The Artcraft applications are written in Rust and Cargo resolves dependencies from crates.io and GitHub at compile time during `%build`. Without network access in the build chroot, Cargo will fail during dependency fetching.
+   > The Artcraft applications are written in Rust; Cargo resolves dependencies from crates.io and GitHub at compile time during `%build`. Without network access in the build chroot, the build will fail.
+
+2. **SCM Package Settings**:
+   - **Source type**: SCM (Git)
+   - **Clone URL**: `https://github.com/apicalshark/apicalshark-copr-collection.git`
+   - **Committish / Branch**: `artcraft` (or `main` once merged)
+   - **Spec file**: `<app_name>.spec` (e.g. `photocraft.spec`, `deckcraft.spec`)
+   - **SRPM build method**: `rpkg`
 
 ---
 

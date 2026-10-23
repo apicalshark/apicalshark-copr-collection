@@ -33,6 +33,7 @@ This repository maintains compile-from-source Fedora RPM spec files for the 13 a
 ```
 .
 ├── *.spec                     # 13 RPM spec files (one per application)
+├── submit_to_copr.sh          # One-click mass submitter for Fedora Copr
 ├── update_specs.sh            # Automated spec updater with nfpm change detection
 ├── fetch_things.sh            # Version checker, drift detector & source fetcher
 ├── fetch_nfpm.sh              # Mass-downloader for upstream packaging/linux/nfpm.yaml
