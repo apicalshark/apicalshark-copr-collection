@@ -36,6 +36,7 @@ This repository maintains compile-from-source Fedora RPM spec files for the 13 a
 ├── trigger_build.sh           # Trigger SCM Git builds in Copr for spec(s)
 ├── submit_to_copr.sh          # One-click mass submitter for Fedora Copr
 ├── update_specs.sh            # Automated spec updater with nfpm change detection
+├── check_fonts.sh             # Inspect & align embedded craft-fonts pins with upstream
 ├── fetch_things.sh            # Version checker, drift detector & source fetcher
 ├── fetch_nfpm.sh              # Mass-downloader for upstream packaging/linux/nfpm.yaml
 ├── reference/
@@ -71,6 +72,19 @@ The primary workflow for updating specs is automated via `update_specs.sh`:
 
 # Validate all upstream source tarball URLs and detect version drift:
 ./fetch_things.sh --check
+```
+
+### Checking & Updating Embedded Fonts (`check_fonts.sh`)
+The 9 apps embedding `storytold/craft-fonts` pin a specific commit via `%global craft_fonts_commit`. Upstream release workflows declare their font pin under `craft-fonts-ref:` in `.github/workflows/release.yml`.
+```bash
+# Check all apps for font commit drift against upstream release workflows:
+./check_fonts.sh
+
+# Display full 40-character commit hashes:
+./check_fonts.sh --verbose
+
+# Automatically update drifted specs to match upstream pins:
+./check_fonts.sh --update
 ```
 
 ### Refreshing Upstream NFPM Packaging References (`fetch_nfpm.sh`)

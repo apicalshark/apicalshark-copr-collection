@@ -6,8 +6,8 @@
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           pdfcraft
-Version:        0.13.0
-Release:        2%{?dist}
+Version:        0.14.0
+Release:        1%{?dist}
 Summary:        Open-source native PDF reader and editor built in Rust
 
 License:        (MIT OR Apache-2.0) AND OFL-1.1

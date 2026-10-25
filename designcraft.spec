@@ -2,12 +2,12 @@
 %define debug_package %{nil}
 
 %global app_id ai.storyteller.designcraft
-%global craft_fonts_commit abb83316d96aa59c1cf64784289e378fe9fa5695
+%global craft_fonts_commit a71c20e30af613287c504f7e685ca8fad77752bc
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           designcraft
-Version:        0.12.0
-Release:        2%{?dist}
+Version:        0.13.0
+Release:        1%{?dist}
 Summary:        Open-source native desktop publishing and page layout application built in Rust
 
 License:        (MIT OR Apache-2.0) AND OFL-1.1

@@ -4,7 +4,7 @@
 %global app_id ai.storyteller.lightcraft
 
 Name:           lightcraft
-Version:        0.13.0
+Version:        0.14.0
 Release:        1%{?dist}
 Summary:        Open-source native photo library and raw developer built in Rust
 
