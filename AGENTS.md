@@ -25,6 +25,10 @@ This repository maintains compile-from-source Fedora RPM spec files for the 13 a
   - Four applications include audio features: `filmcraft`, `effectcraft`, `deckcraft`, and `soundcraft`.
   - These apps require `BuildRequires: pkgconfig(alsa)` and runtime `Requires: alsa-lib`.
   - `soundcraft` also declares `Recommends: (pipewire-alsa or alsa-plugins-pulseaudio)`.
+- **Interface Translations (`craft-i18n`)**:
+  - Apps transitioning to the shared `storytold/craft-i18n` translation catalog (such as `wordcraft` starting in v0.11.0) pin a commit in `craft-i18n.rev`.
+  - Their build script (`crates/ui-egui/build.rs`) embeds translations at compile time via `CRAFT_I18N_DIR`.
+  - If `CRAFT_I18N_DIR` is unset during `cargo build`, the interface defaults to English only. Specs for such apps must pull `storytold/craft-i18n` as a Source, extract it in `%prep`, and set `export CRAFT_I18N_DIR=$PWD/craft-i18n` and `export CRAFT_I18N_REQUIRED=1` in `%build`.
 
 ---
 
@@ -36,7 +40,7 @@ This repository maintains compile-from-source Fedora RPM spec files for the 13 a
 ├── trigger_build.sh           # Trigger SCM Git builds in Copr for spec(s)
 ├── submit_to_copr.sh          # One-click mass submitter for Fedora Copr
 ├── update_specs.sh            # Automated spec updater with nfpm change detection
-├── check_fonts.sh             # Inspect & align embedded craft-fonts pins with upstream
+├── check_external_hash.sh     # Inspect & align embedded craft-fonts and craft-i18n pins
 ├── fetch_things.sh            # Version checker, drift detector & source fetcher
 ├── fetch_nfpm.sh              # Mass-downloader for upstream packaging/linux/nfpm.yaml
 ├── reference/
@@ -74,17 +78,21 @@ The primary workflow for updating specs is automated via `update_specs.sh`:
 ./fetch_things.sh --check
 ```
 
-### Checking & Updating Embedded Fonts (`check_fonts.sh`)
-The 9 apps embedding `storytold/craft-fonts` pin a specific commit via `%global craft_fonts_commit`. Upstream release workflows declare their font pin under `craft-fonts-ref:` in `.github/workflows/release.yml`.
+### Checking & Updating Embedded External Assets (`check_external_hash.sh`)
+External assets embedded via Git commit pins (`storytold/craft-fonts` via `%global craft_fonts_commit` and `storytold/craft-i18n` via `%global craft_i18n_commit`) are inspected and updated together:
 ```bash
-# Check all apps for font commit drift against upstream release workflows:
-./check_fonts.sh
+# Check all apps for both font and i18n commit drift:
+./check_external_hash.sh
 
 # Display full 40-character commit hashes:
-./check_fonts.sh --verbose
+./check_external_hash.sh --verbose
+
+# Check only fonts or only i18n:
+./check_external_hash.sh --fonts
+./check_external_hash.sh --i18n
 
 # Automatically update drifted specs to match upstream pins:
-./check_fonts.sh --update
+./check_external_hash.sh --update
 ```
 
 ### Refreshing Upstream NFPM Packaging References (`fetch_nfpm.sh`)

@@ -4,16 +4,19 @@
 %global app_id ai.storyteller.wordcraft
 %global craft_fonts_commit bfcbf714e45a3ea8e98f88ab2b7971372a576414
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
+%global craft_i18n_commit 04600cbb1508f1b15927ec574a5e32e5f376fd8b
+%global craft_i18n_short %(c=%{craft_i18n_commit}; echo ${c:0:7})
 
 Name:           wordcraft
 Version:        0.11.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source native word processor built in Rust
 
 License:        (MIT OR Apache-2.0) AND OFL-1.1
 URL:            https://github.com/storytold/wordcraft
 Source0:        %{url}/archive/refs/tags/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 Source1:        https://github.com/storytold/craft-fonts/archive/%{craft_fonts_commit}/craft-fonts-%{craft_fonts_short}.tar.gz
+Source2:        https://github.com/storytold/craft-i18n/archive/%{craft_i18n_commit}/craft-i18n-%{craft_i18n_short}.tar.gz
 
 BuildRequires:  cargo
 BuildRequires:  rust >= 1.90
@@ -46,13 +49,17 @@ converting documents, running scripts and serving an MCP endpoint.
 
 %prep
 %autosetup -n %{name}-%{version} -a 1
+%setup -q -D -T -a 2 -n %{name}-%{version}
 mv craft-fonts-%{craft_fonts_commit} craft-fonts
+mv craft-i18n-%{craft_i18n_commit} craft-i18n
 
 %build
 export CARGO_HOME=$PWD/.cargo-home
 export RUSTFLAGS="%{?build_rustflags}"
 export CRAFT_FONTS_DIR=$PWD/craft-fonts
 export CRAFT_FONTS_REQUIRED=1
+export CRAFT_I18N_DIR=$PWD/craft-i18n
+export CRAFT_I18N_REQUIRED=1
 cargo build --release --locked -p wordcraft -p wordcraft-cli
 
 %install
