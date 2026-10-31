@@ -2,11 +2,11 @@
 %define debug_package %{nil}
 
 %global app_id ai.storyteller.designcraft
-%global craft_fonts_commit a71c20e30af613287c504f7e685ca8fad77752bc
+%global craft_fonts_commit b076417b5880bd4154bd22f00695b1d28c6bea83
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           designcraft
-Version:        0.13.0
+Version:        0.15.2
 Release:        1%{?dist}
 Summary:        Open-source native desktop publishing and page layout application built in Rust
 

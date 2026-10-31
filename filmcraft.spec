@@ -2,11 +2,11 @@
 %define debug_package %{nil}
 
 %global app_id ai.storyteller.filmcraft
-%global craft_fonts_commit bfcbf714e45a3ea8e98f88ab2b7971372a576414
+%global craft_fonts_commit b076417b5880bd4154bd22f00695b1d28c6bea83
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           filmcraft
-Version:        0.13.0
+Version:        0.15.0
 Release:        1%{?dist}
 Summary:        Open-source native non-linear video editor built in Rust
 

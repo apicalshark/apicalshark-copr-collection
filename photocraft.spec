@@ -2,11 +2,11 @@
 %define debug_package %{nil}
 
 %global app_id ai.storyteller.photocraft
-%global craft_fonts_commit abb83316d96aa59c1cf64784289e378fe9fa5695
+%global craft_fonts_commit b076417b5880bd4154bd22f00695b1d28c6bea83
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           photocraft
-Version:        0.16.0
+Version:        0.18.0
 Release:        1%{?dist}
 Summary:        Open-source native image editor built in Rust
 

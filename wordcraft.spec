@@ -2,14 +2,14 @@
 %define debug_package %{nil}
 
 %global app_id ai.storyteller.wordcraft
-%global craft_fonts_commit bfcbf714e45a3ea8e98f88ab2b7971372a576414
+%global craft_fonts_commit b076417b5880bd4154bd22f00695b1d28c6bea83
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
-%global craft_i18n_commit 04600cbb1508f1b15927ec574a5e32e5f376fd8b
+%global craft_i18n_commit 9205108cfdced5177706264038848b68b2422d2b
 %global craft_i18n_short %(c=%{craft_i18n_commit}; echo ${c:0:7})
 
 Name:           wordcraft
-Version:        0.11.0
-Release:        2%{?dist}
+Version:        0.13.2
+Release:        1%{?dist}
 Summary:        Open-source native word processor built in Rust
 
 License:        (MIT OR Apache-2.0) AND OFL-1.1

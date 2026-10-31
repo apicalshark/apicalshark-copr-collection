@@ -2,11 +2,11 @@
 %define debug_package %{nil}
 
 %global app_id ai.storyteller.pdfcraft
-%global craft_fonts_commit 3d9ab3a132ed0eff457e424226a435a901da30d3
+%global craft_fonts_commit b076417b5880bd4154bd22f00695b1d28c6bea83
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           pdfcraft
-Version:        0.14.0
+Version:        0.16.1
 Release:        1%{?dist}
 Summary:        Open-source native PDF reader and editor built in Rust
 

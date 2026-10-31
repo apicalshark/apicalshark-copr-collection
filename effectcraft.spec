@@ -4,7 +4,7 @@
 %global app_id ai.storyteller.effectcraft
 
 Name:           effectcraft
-Version:        0.17.0
+Version:        0.19.0
 Release:        1%{?dist}
 Summary:        Open-source native motion graphics and visual effects compositor built in Rust
 

@@ -4,7 +4,7 @@
 %global app_id ai.storyteller.gridcraft
 
 Name:           gridcraft
-Version:        0.12.1
+Version:        0.14.2
 Release:        1%{?dist}
 Summary:        Open-source native spreadsheet application built in Rust
 

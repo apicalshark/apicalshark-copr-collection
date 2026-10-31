@@ -2,11 +2,11 @@
 %define debug_package %{nil}
 
 %global app_id ai.storyteller.figcraft
-%global craft_fonts_commit 43913056ce82a3fdad0ef69f6b88d1dc922a8104
+%global craft_fonts_commit 37827adc41fd165f9a9234ac40f94dbad353aa69
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           figcraft
-Version:        0.11.2
+Version:        0.13.1
 Release:        1%{?dist}
 Summary:        Open-source native interface design and prototyping application built in Rust
 
