@@ -4,7 +4,7 @@
 %global app_id ai.storyteller.soundcraft
 
 Name:           soundcraft
-Version:        0.15.0
+Version:        0.16.0
 Release:        1%{?dist}
 Summary:        Open-source native digital audio workstation built in Rust
 

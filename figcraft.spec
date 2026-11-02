@@ -6,7 +6,7 @@
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           figcraft
-Version:        0.13.1
+Version:        0.14.0
 Release:        1%{?dist}
 Summary:        Open-source native interface design and prototyping application built in Rust
 

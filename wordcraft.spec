@@ -8,7 +8,7 @@
 %global craft_i18n_short %(c=%{craft_i18n_commit}; echo ${c:0:7})
 
 Name:           wordcraft
-Version:        0.13.2
+Version:        0.14.0
 Release:        1%{?dist}
 Summary:        Open-source native word processor built in Rust
 
