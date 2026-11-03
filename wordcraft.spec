@@ -4,7 +4,7 @@
 %global app_id ai.storyteller.wordcraft
 %global craft_fonts_commit b076417b5880bd4154bd22f00695b1d28c6bea83
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
-%global craft_i18n_commit 9205108cfdced5177706264038848b68b2422d2b
+%global craft_i18n_commit 059cbf95c2a3eb95d637ca8584faca1129d17f48
 %global craft_i18n_short %(c=%{craft_i18n_commit}; echo ${c:0:7})
 
 Name:           wordcraft
