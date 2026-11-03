@@ -11,7 +11,7 @@
 #   ./submit_to_copr.sh [project_name] [--build] [--branch <name>] [--chroots "<list>"]
 #
 # Examples:
-#   # Register all 13 packages in artcraft-suites:
+#   # Register all 14 packages in artcraft-suites:
 #   ./submit_to_copr.sh
 #
 #   # Register and immediately trigger builds for all chroots:
@@ -36,6 +36,7 @@ APPS=(
   deckcraft
   soundcraft
   figcraft
+  texturecraft
 )
 
 DEFAULT_PROJECT="artcraft-suites"

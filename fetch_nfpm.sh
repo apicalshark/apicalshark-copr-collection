@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # fetch_nfpm.sh — Mass fetch upstream packaging/linux/nfpm.yaml for all Artcraft apps.
 #
-# This script downloads the latest upstream nfpm.yaml configuration for all 13 Artcraft
+# This script downloads the latest upstream nfpm.yaml configuration for all 14 Artcraft
 # suite applications from storytold/<app> into a reference directory so future AI agents
 # and maintainers can inspect upstream dependencies, overrides, and packaging metadata.
 #
@@ -26,6 +26,7 @@ APPS=(
   deckcraft
   soundcraft
   figcraft
+  texturecraft
 )
 
 TARGET_DIR="${1:-reference/upstream-nfpm}"

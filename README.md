@@ -23,6 +23,7 @@ Each application is written in Rust, built with `cargo`, and packaged following 
 | **Deckcraft** | `deckcraft.spec` | `0.10.0` | `ai.storyteller.deckcraft` | Open-source native presentation and slide designer |
 | **Soundcraft** | `soundcraft.spec` | `0.12.1` | `ai.storyteller.soundcraft` | Open-source native digital audio workstation |
 | **Figcraft** | `figcraft.spec` | `0.10.0` | `ai.storyteller.figcraft` | Open-source native interface design and prototyping application |
+| **Texturecraft** | `texturecraft.spec` | `0.3.0` | `ai.storyteller.texturecraft` | Open-source native 3D texture painter |
 
 ---
 
@@ -42,14 +43,14 @@ Two scripts are provided for Copr management:
   # Trigger builds for multiple specs:
   ./trigger_build.sh photocraft deckcraft soundcraft
 
-  # Trigger builds for all 13 specs across all chroots:
+  # Trigger builds for all 14 specs across all chroots:
   ./trigger_build.sh --all
 
   # Target specific chroots and watch progress:
   ./trigger_build.sh photocraft --chroots fedora-44-x86_64 --watch
   ```
 
-- **`submit_to_copr.sh`** — Register and configure all 13 SCM packages in Copr with auto-rebuild webhooks enabled:
+- **`submit_to_copr.sh`** — Register and configure all 14 SCM packages in Copr with auto-rebuild webhooks enabled:
   ```bash
   ./submit_to_copr.sh
   ```

@@ -2,7 +2,7 @@
 # update_specs.sh — Automatically update Artcraft suite RPM specs on upstream release.
 #
 # Logic:
-#   1. Inspects upstream release tags for each of the 13 applications.
+#   1. Inspects upstream release tags for each of the 14 applications.
 #   2. Compares upstream version against local .spec Version.
 #   3. If a new version exists:
 #      - Downloads upstream packaging/linux/nfpm.yaml at the new release tag.
@@ -57,6 +57,7 @@ ALL_APPS=(
   deckcraft
   soundcraft
   figcraft
+  texturecraft
 )
 
 if [ "${#TARGET_APPS[@]}" -eq 0 ]; then
