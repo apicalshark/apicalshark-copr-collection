@@ -6,7 +6,7 @@ This document guides AI agents and maintainers on how to inspect, maintain, upda
 
 ## 1. Repository Purpose & Architecture
 
-This repository maintains compile-from-source Fedora RPM spec files for the 14 applications in the Storytold Artcraft suite (`https://github.com/orgs/storytold/repositories`).
+This repository maintains compile-from-source Fedora RPM spec files for the 15 applications in the Storytold Artcraft suite (`https://github.com/orgs/storytold/repositories`).
 
 ### Key Principles
 - **Compiled From Source**: All packages compile directly from official upstream GitHub release tarballs using `cargo build --release --locked -p <app> -p <app>-cli`. Precompiled binary tarballs are not used.
@@ -36,7 +36,7 @@ This repository maintains compile-from-source Fedora RPM spec files for the 14 a
 
 ```
 .
-├── *.spec                     # 14 RPM spec files (one per application)
+├── *.spec                     # 15 RPM spec files (one per application)
 ├── trigger_build.sh           # Trigger SCM Git builds in Copr for spec(s)
 ├── submit_to_copr.sh          # One-click mass submitter for Fedora Copr
 ├── update_specs.sh            # Automated spec updater with nfpm change detection
@@ -98,7 +98,7 @@ External assets embedded via Git commit pins (`storytold/craft-fonts` via `%glob
 ### Refreshing Upstream NFPM Packaging References (`fetch_nfpm.sh`)
 Each upstream repository contains `packaging/linux/nfpm.yaml`, which specifies upstream dependencies, descriptions, and file maps.
 ```bash
-# Refresh all 14 cached nfpm.yaml files:
+# Refresh all 15 cached nfpm.yaml files:
 ./fetch_nfpm.sh
 ```
 Cached reference files are stored in `reference/upstream-nfpm/<app>-nfpm.yaml`. Consult these whenever upstream alters dependencies or runtime requirements.
@@ -191,3 +191,4 @@ When triggering or configuring Copr builds for this repository:
 | `soundcraft` | `ai.storyteller.soundcraft` | `storytold/soundcraft` | **Yes** | DAW; `Recommends: pipewire-alsa` |
 | `figcraft` | `ai.storyteller.figcraft` | `storytold/figcraft` | No | Interface design & prototyping |
 | `texturecraft` | `ai.storyteller.texturecraft` | `storytold/texturecraft` | No | 3D PBR texture painter |
+| `materialcraft` | `ai.storyteller.materialcraft` | `storytold/materialcraft` | No | Procedural material designer |

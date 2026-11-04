@@ -11,7 +11,7 @@
 #   ./trigger_build.sh [--all] [app_or_spec_names...] [options]
 #
 # Options:
-#   --all                  Trigger builds for all 14 specs in the suite
+#   --all                  Trigger builds for all 15 specs in the suite
 #   --project <name>       Target Copr project (default: artcraft-suites)
 #   --branch <branch>      Git branch/committish (default: artcraft)
 #   --repo <url>           Git clone URL (default: repo remote origin)
@@ -26,7 +26,7 @@
 #   # Trigger build for multiple apps:
 #   ./trigger_build.sh photocraft filmcraft soundcraft
 #
-#   # Trigger builds for all 14 apps across all chroots:
+#   # Trigger builds for all 15 apps across all chroots:
 #   ./trigger_build.sh --all
 #
 #   # Trigger build for a specific chroot and watch it:
@@ -51,6 +51,7 @@ DEFAULT_APPS=(
   soundcraft
   figcraft
   texturecraft
+  materialcraft
 )
 
 DEFAULT_PROJECT="artcraft-suites"

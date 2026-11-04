@@ -11,6 +11,7 @@ set -euo pipefail
 readonly APPS=(
   photocraft pdfcraft filmcraft wordcraft lightcraft vectorcraft effectcraft
   cadcraft gridcraft designcraft deckcraft soundcraft figcraft texturecraft
+  materialcraft
 )
 readonly OWNER="${GITHUB_OWNER:-storytold}"
 readonly TIMEOUT="${FETCH_TIMEOUT:-20}"

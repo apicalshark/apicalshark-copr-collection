@@ -31,6 +31,7 @@ readonly ALL_APPS=(
   soundcraft
   figcraft
   texturecraft
+  materialcraft
 )
 
 # Terminal colors
