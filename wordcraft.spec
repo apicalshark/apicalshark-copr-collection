@@ -4,11 +4,11 @@
 %global app_id ai.storyteller.wordcraft
 %global craft_fonts_commit b076417b5880bd4154bd22f00695b1d28c6bea83
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
-%global craft_i18n_commit 059cbf95c2a3eb95d637ca8584faca1129d17f48
+%global craft_i18n_commit 9d6d54d6d9ff603cc41e12e5f6ba51af3554ab66
 %global craft_i18n_short %(c=%{craft_i18n_commit}; echo ${c:0:7})
 
 Name:           wordcraft
-Version:        0.15.0
+Version:        0.15.1
 Release:        1%{?dist}
 Summary:        Open-source native word processor built in Rust
 
@@ -19,7 +19,7 @@ Source1:        https://github.com/storytold/craft-fonts/archive/%{craft_fonts_c
 Source2:        https://github.com/storytold/craft-i18n/archive/%{craft_i18n_commit}/craft-i18n-%{craft_i18n_short}.tar.gz
 
 BuildRequires:  cargo
-BuildRequires:  rust >= 1.90
+BuildRequires:  rust >= 1.95
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  desktop-file-utils

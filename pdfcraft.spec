@@ -4,9 +4,11 @@
 %global app_id ai.storyteller.pdfcraft
 %global craft_fonts_commit b076417b5880bd4154bd22f00695b1d28c6bea83
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
+%global craft_i18n_commit 575cfdef63227b14daf173b8cc87928bfdfa325e
+%global craft_i18n_short %(c=%{craft_i18n_commit}; echo ${c:0:7})
 
 Name:           pdfcraft
-Version:        0.18.0
+Version:        0.18.1
 Release:        1%{?dist}
 Summary:        Open-source native PDF reader and editor built in Rust
 
@@ -14,9 +16,10 @@ License:        (MIT OR Apache-2.0) AND OFL-1.1
 URL:            https://github.com/storytold/pdfcraft
 Source0:        %{url}/archive/refs/tags/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 Source1:        https://github.com/storytold/craft-fonts/archive/%{craft_fonts_commit}/craft-fonts-%{craft_fonts_short}.tar.gz
+Source2:        https://github.com/storytold/craft-i18n/archive/%{craft_i18n_commit}/craft-i18n-%{craft_i18n_short}.tar.gz
 
 BuildRequires:  cargo
-BuildRequires:  rust >= 1.90
+BuildRequires:  rust >= 1.95
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  desktop-file-utils
@@ -49,13 +52,17 @@ scripts and serving an MCP endpoint.
 
 %prep
 %autosetup -n %{name}-%{version} -a 1
+%setup -q -D -T -a 2 -n %{name}-%{version}
 mv craft-fonts-%{craft_fonts_commit} craft-fonts
+mv craft-i18n-%{craft_i18n_commit} craft-i18n
 
 %build
 export CARGO_HOME=$PWD/.cargo-home
 export RUSTFLAGS="%{?build_rustflags}"
 export CRAFT_FONTS_DIR=$PWD/craft-fonts
 export CRAFT_FONTS_REQUIRED=1
+export CRAFT_I18N_DIR=$PWD/craft-i18n
+export CRAFT_I18N_REQUIRED=1
 cargo build --release --locked -p pdfcraft -p pdfcraft-cli
 
 %install
