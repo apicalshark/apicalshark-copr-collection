@@ -4,17 +4,11 @@
 # Disable all default Red Hat / Fedora build and compiler flags (CFLAGS, LDFLAGS, RUSTFLAGS, annobin, package notes, hardening)
 %undefine _auto_set_build_flags
 
-# Custom high-performance flags:
-# - opt-level=3: Maximize LLVM optimization
-# - debuginfo=0: Zero debug symbols
-# - strip=symbols: Strip all symbols (symbol table + debuginfo)
-# - target-cpu=x86-64-v3: Maximize performance with AVX/AVX2/FMA/BMI2 instructions
-# - lto=fat: Full whole-program Link-Time Optimization
-# - codegen-units=1: Single compilation unit for maximum cross-crate inlining
+# Only use RUSTFLAGS for compiler target-cpu instruction set tuning:
 %ifarch x86_64
-%global custom_rustflags -C opt-level=3 -C debuginfo=0 -C strip=symbols -C target-cpu=x86-64-v3 -C lto=fat -C codegen-units=1
+%global custom_rustflags -C target-cpu=x86-64-v3
 %else
-%global custom_rustflags -C opt-level=3 -C debuginfo=0 -C strip=symbols -C lto=fat -C codegen-units=1
+%global custom_rustflags %{nil}
 %endif
 
 %global app_id ai.storyteller.vectorcraft
@@ -66,6 +60,14 @@ mv craft-fonts-%{craft_fonts_commit} craft-fonts
 %build
 export CARGO_HOME=$PWD/.cargo-home
 export RUSTFLAGS="%{custom_rustflags}"
+
+# Cargo profiles configure optimizations, LTO, and stripping safely for target binaries:
+export CARGO_PROFILE_RELEASE_OPT_LEVEL=3
+export CARGO_PROFILE_RELEASE_DEBUG=false
+export CARGO_PROFILE_RELEASE_STRIP="symbols"
+export CARGO_PROFILE_RELEASE_LTO="fat"
+export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1
+
 export CRAFT_FONTS_DIR=$PWD/craft-fonts
 export CRAFT_FONTS_REQUIRED=1
 export VECTORCRAFT_BUILD_DATE=$(date -u -d "@${SOURCE_DATE_EPOCH:-$(date +%%s)}" +%%F)
