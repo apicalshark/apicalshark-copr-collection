@@ -1,0 +1,181 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index 901e13678b..cb4ceb6500 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -6677,6 +6677,8 @@ dependencies = [
+  "wordcraft-fonts",
+  "wordcraft-proof",
+  "wordcraft-ui-egui",
++ "x11-dl",
++ "xkbcommon-dl",
+  "zbus",
+ ]
+ 
+diff --git a/README.md b/README.md
+index fbe286f7be..5f53fe8b60 100644
+--- a/README.md
++++ b/README.md
+@@ -286,13 +286,17 @@ adapter. The log file records the choice (lines starting with
+ RISC-V (riscv64): `wordcraft-<ver>-linux-riscv64.tar.gz`, a tarball cross-compiled for glibc 2.39+
+ (Ubuntu 24.04, Debian 13 and newer).
+ 
+-**Wayland:** on a Wayland desktop the app runs through XWayland when it is available, because
+-winit (the windowing library) supports dragging files into the window only on X11. To use the
+-native Wayland backend instead (for example for sharper text with fractional scaling, at the cost
+-of file drag-and-drop), start it with `WORDCRAFT_WAYLAND=1`:
++**Wayland:** on a Wayland desktop the app uses the native Wayland backend, which is sharp at
++fractional scales and works with input methods. winit (the windowing library) supports dragging
++files into the window only on X11, so to drop files from the file manager, run the app through
++XWayland with `WORDCRAFT_X11=1`. This needs the X11 libraries: libX11, libX11-xcb, libXcursor,
++libXi and libxkbcommon-x11 (on Debian and Ubuntu: libx11-6, libx11-xcb1, libxcursor1, libxi6 and
++libxkbcommon-x11-0). The deb and rpm only recommend them and the tarball doesn't bring them, so
++install them yourself if they're missing; without them the setting is ignored and the app opens on
++native Wayland:
+ 
+ ```sh
+-WORDCRAFT_WAYLAND=1 wordcraft
++WORDCRAFT_X11=1 wordcraft
+ ```
+ 
+ **Arch Linux (AUR).** Community members maintain three AUR packages; the project doesn't publish
+diff --git a/apps/wordcraft/Cargo.toml b/apps/wordcraft/Cargo.toml
+index f60cf295ef..6212cbfb13 100644
+--- a/apps/wordcraft/Cargo.toml
++++ b/apps/wordcraft/Cargo.toml
+@@ -51,6 +51,12 @@ dispatch2 = "0.3"
+ 
+ [target.'cfg(all(unix, not(target_os = "macos")))'.dependencies]
+ winit = { version = "0.30", default-features = false, features = ["x11"] }
++# Checks that the X11 libraries are installed before choosing XWayland (see main.rs). Already in
++# the build through winit, at this version.
++x11-dl = "2.21"
++# Checks for libxkbcommon-x11 too, which winit's X11 backend needs for the keyboard and panics
++# without. Already in the build through winit, at this version and with this feature.
++xkbcommon-dl = { version = "0.4.2", features = ["x11"] }
+ # The desktop's animation setting on Linux and the BSDs, read from the XDG settings portal over
+ # D-Bus. Already in the build through AccessKit, at this version; this adds only its blocking API.
+ zbus = { version = "5", default-features = false, features = ["async-io", "blocking-api"] }
+diff --git a/apps/wordcraft/src/main.rs b/apps/wordcraft/src/main.rs
+index 765a0f3a95..78d6b97f34 100644
+--- a/apps/wordcraft/src/main.rs
++++ b/apps/wordcraft/src/main.rs
+@@ -291,6 +291,31 @@ fn app_icon() -> Option<egui::IconData> {
+     eframe::icon_data::from_png_bytes(png).map_err(|e| log::warn!("app icon: {e}")).ok()
+ }
+ 
++/// Whether the libraries winit's X11 backend opens at startup are installed (libX11, libXcursor,
++/// libX11-xcb and libXi; libX11-xcb brings in libxcb; and libxkbcommon-x11, for the keyboard).
++/// The deb and rpm only recommend them, and a forced X11 backend without them fails to start
++/// (winit panics when libxkbcommon-x11 is missing).
++#[cfg(all(unix, not(target_os = "macos")))]
++/// Whether to run through XWayland: `WORDCRAFT_X11=1` and an X display to run on. An empty
++/// `DISPLAY` names none, and forcing X11 there fails to start.
++fn xwayland_requested(display: Option<&std::ffi::OsStr>, x11: Option<&std::ffi::OsStr>) -> bool {
++    display.is_some_and(|d| !d.is_empty()) && x11.is_some_and(|v| v == "1")
++}
++
++#[cfg(all(unix, not(target_os = "macos")))]
++fn x11_libraries_load() -> bool {
++    use x11_dl::{xcursor::Xcursor, xinput2::XInput2, xlib::Xlib, xlib_xcb::Xlib_xcb};
++    let missing = [Xlib::open().err(), Xcursor::open().err(), Xlib_xcb::open().err(), XInput2::open().err()];
++    let mut missing: Vec<String> = missing.into_iter().flatten().map(|e| e.to_string()).collect();
++    if xkbcommon_dl::x11::xkbcommon_x11_option().is_none() {
++        missing.push("libxkbcommon-x11.so.0 could not be loaded".into());
++    }
++    if !missing.is_empty() {
++        log::warn!("WORDCRAFT_X11: X11 libraries missing, using the native Wayland backend: {}", missing.join("; "));
++    }
++    missing.is_empty()
++}
++
+ const USAGE: &str = "\
+ wordcraft — the WordCraft desktop app
+ 
+@@ -459,11 +484,19 @@ fn main() -> eframe::Result {
+     if let Some(window) = restored {
+         options.viewport = window.apply(options.viewport);
+     }
++    // WORDCRAFT_WAYLAND used to opt in to native Wayland, which is now the default: anyone
++    // who set it still gets what they asked for, and is told it can go.
+     #[cfg(all(unix, not(target_os = "macos")))]
+-    // winit has no file drag-and-drop on Wayland (only on X11), so dropping files from the file
+-    // manager showed a "no" cursor. Run through XWayland when it's there; WORDCRAFT_WAYLAND=1
+-    // keeps the native Wayland backend.
+-    if std::env::var_os("DISPLAY").is_some() && std::env::var_os("WORDCRAFT_WAYLAND").is_none() {
++    if std::env::var_os("WORDCRAFT_WAYLAND").is_some() {
++        log::info!("WORDCRAFT_WAYLAND is no longer needed: WordCraft starts on native Wayland by default");
++    }
++    #[cfg(all(unix, not(target_os = "macos")))]
++    // winit runs natively on a Wayland desktop: sharp at fractional scales, with working input
++    // methods. It has no file drag-and-drop there (only on X11), so WORDCRAFT_X11=1 runs through
++    // XWayland instead for dropping files from the file manager (#220); any other value, 0 or
++    // empty included, leaves it off. The X11 libraries are only recommended by the packages, so
++    // without them the setting is ignored rather than failing.
++    if xwayland_requested(std::env::var_os("DISPLAY").as_deref(), std::env::var_os("WORDCRAFT_X11").as_deref()) && x11_libraries_load() {
+         options.event_loop_builder = Some(Box::new(|b| {
+             use winit::platform::x11::EventLoopBuilderExtX11;
+             b.with_x11();
+@@ -554,6 +587,18 @@ mod tests {
+     use super::*;
+     use std::os::unix::ffi::OsStringExt;
+ 
++    #[test]
++    fn xwayland_only_with_wordcraft_x11_1_and_a_display() {
++        let os = |s: &'static str| Some(std::ffi::OsStr::new(s));
++        assert!(xwayland_requested(os(":0"), os("1")));
++        // An empty DISPLAY names no X server: forcing X11 there would fail to start.
++        assert!(!xwayland_requested(os(""), os("1")));
++        assert!(!xwayland_requested(None, os("1")));
++        for off in [None, os(""), os("0"), os("true")] {
++            assert!(!xwayland_requested(os(":0"), off));
++        }
++    }
++
+     #[test]
+     fn a_file_whose_name_isnt_unicode_opens_and_saves_back_to_itself() {
+         let dir = std::env::temp_dir().join(format!("wc-app-non-utf8-{}", std::process::id()));
+diff --git a/docs/egui-037-migration-plan.md b/docs/egui-037-migration-plan.md
+index 34ef819505..305b5f58e8 100644
+--- a/docs/egui-037-migration-plan.md
++++ b/docs/egui-037-migration-plan.md
+@@ -976,7 +976,8 @@ Proposed `task.py run` command bodies (the parent supplies task/job/evidence):
+ Run the release app with `--sample --control 7981` and a temporary settings dir
+ (`WORDCRAFT_NO_PREFS` for agent runs where appropriate). Use `ui.screenshot`, `ui.inspect`,
+ `ui.click`, `ui.key`, `ui.text`, `ui.wheel`, save/open. Observe X11 and a real Wayland
+-compositor (record compositor identity); use `WORDCRAFT_WAYLAND=1` where needed. Check regular
++compositor (record compositor identity): WordCraft starts on native Wayland, and `WORDCRAFT_X11=1`
++runs it through XWayland. Check regular
+ clipboard, middle-click autoscroll (no PRIMARY paste), file drop, native IME and
+ DeleteSurroundingBytes/outgoing surrounding text, real Russian/Arabic/Hebrew keyboard layouts,
+ mixed DPI, window resize, a forced hidden screenshot pass, screenshot timeout/cancel and page
+diff --git a/packaging/linux/nfpm.yaml b/packaging/linux/nfpm.yaml
+index bf75ccc1eb..242d3e5e7c 100644
+--- a/packaging/linux/nfpm.yaml
++++ b/packaging/linux/nfpm.yaml
+@@ -24,7 +24,8 @@ description: |-
+ 
+ # The binaries link only glibc and libgcc_s directly. Windowing (X11/Wayland, xkbcommon) and the
+ # GPU (Vulkan, EGL/GL) are loaded at runtime, so they are dependencies/recommendations here
+-# rather than ELF NEEDED entries.
++# rather than ELF NEEDED entries. On a Wayland desktop the app runs natively and needs X11 only
++# with WORDCRAFT_X11=1 (see main.rs), so the X11 libraries are recommendations.
+ overrides:
+   deb:
+     depends:
+@@ -36,6 +37,7 @@ overrides:
+       - libwayland-client0
+       - libx11-6
+       - libx11-xcb1
++      - libxkbcommon-x11-0
+       - libxcursor1
+       - libxi6
+       - libxrandr2
+@@ -48,6 +50,8 @@ overrides:
+     recommends:
+       - libwayland-client
+       - libX11
++      - libX11-xcb
++      - libxkbcommon-x11
+       - libXcursor
+       - libXi
+       - libXrandr

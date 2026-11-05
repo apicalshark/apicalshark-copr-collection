@@ -17,7 +17,7 @@ URL:            https://github.com/storytold/wordcraft
 Source0:        %{url}/archive/refs/tags/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 Source1:        https://github.com/storytold/craft-fonts/archive/%{craft_fonts_commit}/craft-fonts-%{craft_fonts_short}.tar.gz
 Source2:        https://github.com/storytold/craft-i18n/archive/%{craft_i18n_commit}/craft-i18n-%{craft_i18n_short}.tar.gz
-Patch0:         https://github.com/storytold/wordcraft/pull/3359.diff#/wordcraft-pr3359-wayland-fallback.patch
+Patch0:         patches/wordcraft-pr3359-wayland-fallback.patch
 
 BuildRequires:  cargo
 BuildRequires:  rust >= 1.95
