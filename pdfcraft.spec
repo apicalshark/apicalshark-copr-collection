@@ -8,7 +8,7 @@
 %global craft_i18n_short %(c=%{craft_i18n_commit}; echo ${c:0:7})
 
 Name:           pdfcraft
-Version:        0.18.1
+Version:        0.18.2
 Release:        1%{?dist}
 Summary:        Open-source native PDF reader and editor built in Rust
 

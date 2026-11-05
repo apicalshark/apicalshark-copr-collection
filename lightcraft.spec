@@ -6,7 +6,7 @@
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           lightcraft
-Version:        0.18.0
+Version:        0.18.1
 Release:        1%{?dist}
 Summary:        Open-source native photo library and raw developer built in Rust
 

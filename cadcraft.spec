@@ -6,7 +6,7 @@
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           cadcraft
-Version:        0.17.0
+Version:        0.17.1
 Release:        1%{?dist}
 Summary:        Open-source native CAD and drafting application built in Rust
 

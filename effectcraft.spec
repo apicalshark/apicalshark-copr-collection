@@ -6,7 +6,7 @@
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           effectcraft
-Version:        0.21.0
+Version:        0.21.1
 Release:        1%{?dist}
 Summary:        Open-source native motion graphics and visual effects compositor built in Rust
 
