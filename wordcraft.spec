@@ -9,7 +9,7 @@
 
 Name:           wordcraft
 Version:        0.15.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source native word processor built in Rust
 
 License:        (MIT OR Apache-2.0) AND OFL-1.1
@@ -17,6 +17,7 @@ URL:            https://github.com/storytold/wordcraft
 Source0:        %{url}/archive/refs/tags/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 Source1:        https://github.com/storytold/craft-fonts/archive/%{craft_fonts_commit}/craft-fonts-%{craft_fonts_short}.tar.gz
 Source2:        https://github.com/storytold/craft-i18n/archive/%{craft_i18n_commit}/craft-i18n-%{craft_i18n_short}.tar.gz
+Patch0:         patches/wordcraft-pr3359-wayland-fallback.patch
 
 BuildRequires:  cargo
 BuildRequires:  rust >= 1.95
@@ -27,11 +28,12 @@ BuildRequires:  appstream
 
 Requires:       hicolor-icon-theme
 Requires:       libxkbcommon
-Requires:       libxkbcommon-x11
 Requires:       (vulkan-loader or libglvnd-egl)
 
 Recommends:     libwayland-client
+Recommends:     libxkbcommon-x11
 Recommends:     libX11
+Recommends:     libX11-xcb
 Recommends:     libXcursor
 Recommends:     libXi
 Recommends:     libXrandr
