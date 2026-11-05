@@ -1,6 +1,16 @@
 %define _debugsource_template %{nil}
 %define debug_package %{nil}
 
+# Disable all default Red Hat / Fedora build and compiler flags (CFLAGS, LDFLAGS, RUSTFLAGS, annobin, package notes, hardening)
+%undefine _auto_set_build_flags
+
+# Only use RUSTFLAGS for compiler target-cpu instruction set tuning:
+%ifarch x86_64
+%global custom_rustflags -C target-cpu=x86-64-v3
+%else
+%global custom_rustflags %{nil}
+%endif
+
 %global app_id ai.storyteller.designcraft
 %global craft_fonts_commit b076417b5880bd4154bd22f00695b1d28c6bea83
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
@@ -49,7 +59,14 @@ mv craft-fonts-%{craft_fonts_commit} craft-fonts
 
 %build
 export CARGO_HOME=$PWD/.cargo-home
-export RUSTFLAGS="%{?build_rustflags}"
+export RUSTFLAGS="%{custom_rustflags}"
+
+# Cargo profiles configure optimizations, LTO, and stripping safely for target binaries:
+export CARGO_PROFILE_RELEASE_OPT_LEVEL=3
+export CARGO_PROFILE_RELEASE_DEBUG=false
+export CARGO_PROFILE_RELEASE_STRIP="symbols"
+export CARGO_PROFILE_RELEASE_LTO="fat"
+export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1
 export CRAFT_FONTS_DIR=$PWD/craft-fonts
 export CRAFT_FONTS_REQUIRED=1
 cargo build --release --locked -p designcraft -p designcraft-cli
