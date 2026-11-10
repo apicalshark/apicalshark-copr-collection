@@ -17,7 +17,7 @@
 
 Name:           effectcraft
 Version:        0.23.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source native motion graphics and visual effects compositor built in Rust
 
 License:        (MIT OR Apache-2.0) AND OFL-1.1
@@ -68,8 +68,8 @@ export RUSTFLAGS="%{custom_rustflags}"
 export CARGO_PROFILE_RELEASE_OPT_LEVEL=3
 export CARGO_PROFILE_RELEASE_DEBUG=false
 export CARGO_PROFILE_RELEASE_STRIP="symbols"
-export CARGO_PROFILE_RELEASE_LTO="fat"
-export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1
+export CARGO_PROFILE_RELEASE_LTO="thin"
+export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=16
 export CRAFT_FONTS_DIR=$PWD/craft-fonts
 export CRAFT_FONTS_REQUIRED=1
 cargo build --release --locked -p effectcraft -p effectcraft-cli
