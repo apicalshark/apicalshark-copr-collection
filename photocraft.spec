@@ -16,7 +16,7 @@
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           photocraft
-Version:        0.20.2
+Version:        0.22.0
 Release:        1%{?dist}
 Summary:        Open-source native image editor built in Rust
 

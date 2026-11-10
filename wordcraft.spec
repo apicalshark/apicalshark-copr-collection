@@ -14,11 +14,11 @@
 %global app_id ai.storyteller.wordcraft
 %global craft_fonts_commit b076417b5880bd4154bd22f00695b1d28c6bea83
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
-%global craft_i18n_commit 9d6d54d6d9ff603cc41e12e5f6ba51af3554ab66
+%global craft_i18n_commit 1e515422afdda2f317af430c1f9d68a5f83935b4
 %global craft_i18n_short %(c=%{craft_i18n_commit}; echo ${c:0:7})
 
 Name:           wordcraft
-Version:        0.15.2
+Version:        0.17.0
 Release:        1%{?dist}
 Summary:        Open-source native word processor built in Rust
 
@@ -47,6 +47,7 @@ Recommends:     libXi
 Recommends:     libXrandr
 Recommends:     mesa-vulkan-drivers
 Recommends:     xdg-desktop-portal
+Recommends:     espeak-ng
 
 %description
 WordCraft is an open-source, native word processor written in Rust. It offers

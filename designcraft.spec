@@ -16,7 +16,7 @@
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           designcraft
-Version:        0.17.2
+Version:        0.19.0
 Release:        1%{?dist}
 Summary:        Open-source native desktop publishing and page layout application built in Rust
 

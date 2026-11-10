@@ -16,7 +16,7 @@
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           lightcraft
-Version:        0.18.1
+Version:        0.20.0
 Release:        1%{?dist}
 Summary:        Open-source native photo library and raw developer built in Rust
 
@@ -26,7 +26,7 @@ Source0:        %{url}/archive/refs/tags/v%{version}.tar.gz#/%{name}-%{version}.
 Source1:        https://github.com/storytold/craft-fonts/archive/%{craft_fonts_commit}/craft-fonts-%{craft_fonts_short}.tar.gz
 
 BuildRequires:  cargo
-BuildRequires:  rust >= 1.90
+BuildRequires:  rust >= 1.95
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  desktop-file-utils

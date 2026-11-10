@@ -16,7 +16,7 @@
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           materialcraft
-Version:        0.1.2
+Version:        0.3.0
 Release:        1%{?dist}
 Summary:        Open-source native procedural material designer built in Rust
 

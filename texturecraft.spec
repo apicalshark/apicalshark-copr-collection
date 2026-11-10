@@ -16,7 +16,7 @@
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           texturecraft
-Version:        0.3.2
+Version:        0.5.0
 Release:        1%{?dist}
 Summary:        Open-source native 3D texture painter built in Rust
 
