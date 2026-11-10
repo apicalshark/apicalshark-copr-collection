@@ -45,6 +45,7 @@ This repository maintains compile-from-source Fedora RPM spec files for the 15 a
 ├── fetch_nfpm.sh              # Mass-downloader for upstream packaging/linux/nfpm.yaml
 ├── reference/
 │   └── upstream-nfpm/         # Cached upstream nfpm.yaml files for reference
+├── watch_builds.py            # Live color-coded grid monitor for Copr builds with timing
 ├── README.md                  # Human-facing project overview and Copr build guide
 └── AGENT.md                   # Agent maintenance guide (this file)
 ```
@@ -192,3 +193,33 @@ When triggering or configuring Copr builds for this repository:
 | `figcraft` | `ai.storyteller.figcraft` | `storytold/figcraft` | No | Interface design & prototyping |
 | `texturecraft` | `ai.storyteller.texturecraft` | `storytold/texturecraft` | No | 3D PBR texture painter |
 | `materialcraft` | `ai.storyteller.materialcraft` | `storytold/materialcraft` | No | Procedural material designer |
+| `solidcraft` | `io.tangencylabs.solidcraft` | `tangency-labs/solidcraft` | No | Parametric 3D CAD (Non-Artcraft, see §7) |
+
+---
+
+## 7. Non-Artcraft Applications & Special Workflows
+
+### SolidCraft (`solidcraft.spec`)
+SolidCraft (`https://github.com/tangency-labs/solidcraft`) is an open-source parametric 3D CAD application built in pure Rust. While its packaging tooling was originally adapted from PhotoCraft, several architectural differences apply:
+
+1. **No External Git Sub-repo Pins**:
+   - SolidCraft does **not** consume `storytold/craft-fonts` or `storytold/craft-i18n`.
+   - Locales (`assets/locales/`), UI themes, and default font assets are bundled self-contained inside the upstream repository. Only `Source0` is required.
+2. **Triple Binary Artifacts**:
+   - Builds and installs three executables into `%{_bindir}`:
+     - `solidcraft`: Graphical desktop CAD application
+     - `solidcraft-cli`: Headless CLI runner, exporter, snapshot renderer, and MCP server
+     - `solvecraft-cli`: Backward-compatibility forwarding wrapper that calls `solidcraft-cli`
+3. **Compatibility Migration Shims (`solvecraft` -> `solidcraft`)**:
+   - The project was previously named `solvecraft`.
+   - The spec provides `Provides: solvecraft = %{version}-%{release}` and `Obsoletes: solvecraft < 0.8.0` to smoothly upgrade installations.
+4. **Desktop Integration & Asset Paths**:
+   - App ID: `io.tangencylabs.solidcraft` (formerly `ai.storyteller.solidcraft` and `ai.storyteller.solvecraft`).
+   - Desktop entry, metainfo, and MIME package files reside under `assets/platforms/linux/`:
+     - `assets/platforms/linux/io.tangencylabs.solidcraft.desktop`
+     - `assets/platforms/linux/io.tangencylabs.solidcraft.metainfo.xml.in`
+     - `assets/platforms/linux/io.tangencylabs.solidcraft.mime.xml`
+   - Icons are pre-exported under `assets/icons/app/linux/exports/hicolor/${s}x${s}/apps/io.tangencylabs.solidcraft.png` across resolutions 16px to 512px.
+5. **Runtime Dependencies**:
+   - Declares runtime `Requires:` for `libxkbcommon`, `libxkbcommon-x11`, and `(vulkan-loader or libglvnd-egl)`.
+   - Declares `Recommends:` for X11/Wayland runtime loaders (`libwayland-client`, `libX11`, `libX11-xcb`, `libxcb`, `libXcursor`, `libXi`), `mesa-vulkan-drivers`, and `xdg-desktop-portal`.
