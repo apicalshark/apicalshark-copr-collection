@@ -14,9 +14,11 @@
 %global app_id ai.storyteller.photocraft
 %global craft_fonts_commit b076417b5880bd4154bd22f00695b1d28c6bea83
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
+%global craft_i18n_commit e02939ef009218e81c44e8ec001fbb7603461de4
+%global craft_i18n_short %(c=%{craft_i18n_commit}; echo ${c:0:7})
 
 Name:           photocraft
-Version:        0.22.0
+Version:        0.23.0
 Release:        1%{?dist}
 Summary:        Open-source native image editor built in Rust
 
@@ -24,6 +26,7 @@ License:        (MIT OR Apache-2.0) AND OFL-1.1
 URL:            https://github.com/storytold/photocraft
 Source0:        %{url}/archive/refs/tags/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 Source1:        https://github.com/storytold/craft-fonts/archive/%{craft_fonts_commit}/craft-fonts-%{craft_fonts_short}.tar.gz
+Source2:        https://github.com/storytold/craft-i18n/archive/%{craft_i18n_commit}/craft-i18n-%{craft_i18n_short}.tar.gz
 
 BuildRequires:  cargo
 BuildRequires:  rust >= 1.95
@@ -56,7 +59,9 @@ and inspecting images, running commands in batch and serving an MCP endpoint.
 
 %prep
 %autosetup -n %{name}-%{version} -a 1
+%setup -q -D -T -a 2 -n %{name}-%{version}
 mv craft-fonts-%{craft_fonts_commit} craft-fonts
+mv craft-i18n-%{craft_i18n_commit} craft-i18n
 
 %build
 export CARGO_HOME=$PWD/.cargo-home
@@ -66,10 +71,12 @@ export RUSTFLAGS="%{custom_rustflags}"
 export CARGO_PROFILE_RELEASE_OPT_LEVEL=3
 export CARGO_PROFILE_RELEASE_DEBUG=false
 export CARGO_PROFILE_RELEASE_STRIP="symbols"
-export CARGO_PROFILE_RELEASE_LTO="fat"
-export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1
+export CARGO_PROFILE_RELEASE_LTO="thin"
+export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=16
 export CRAFT_FONTS_DIR=$PWD/craft-fonts
 export CRAFT_FONTS_REQUIRED=1
+export CRAFT_I18N_DIR=$PWD/craft-i18n
+export CRAFT_I18N_REQUIRED=1
 export PHOTOCRAFT_BUILD_DATE=$(date -u -d "@${SOURCE_DATE_EPOCH:-$(date +%%s)}" +%%F)
 cargo build --release --locked -p photocraft -p photocraft-cli
 

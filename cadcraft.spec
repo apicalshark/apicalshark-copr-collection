@@ -16,7 +16,7 @@
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           cadcraft
-Version:        0.19.0
+Version:        0.20.1
 Release:        1%{?dist}
 Summary:        Open-source native CAD and drafting application built in Rust
 
@@ -67,8 +67,8 @@ export RUSTFLAGS="%{custom_rustflags}"
 export CARGO_PROFILE_RELEASE_OPT_LEVEL=3
 export CARGO_PROFILE_RELEASE_DEBUG=false
 export CARGO_PROFILE_RELEASE_STRIP="symbols"
-export CARGO_PROFILE_RELEASE_LTO="fat"
-export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1
+export CARGO_PROFILE_RELEASE_LTO="thin"
+export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=16
 export CRAFT_FONTS_DIR=$PWD/craft-fonts
 export CRAFT_FONTS_REQUIRED=1
 export CADCRAFT_BUILD_DATE=$(date -u -d "@${SOURCE_DATE_EPOCH:-$(date +%%s)}" +%%F)

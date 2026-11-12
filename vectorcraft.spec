@@ -16,7 +16,7 @@
 %global craft_fonts_short %(c=%{craft_fonts_commit}; echo ${c:0:7})
 
 Name:           vectorcraft
-Version:        0.23.0
+Version:        0.24.0
 Release:        1%{?dist}
 Summary:        Open-source native vector illustration editor built in Rust
 
@@ -65,8 +65,8 @@ export RUSTFLAGS="%{custom_rustflags}"
 export CARGO_PROFILE_RELEASE_OPT_LEVEL=3
 export CARGO_PROFILE_RELEASE_DEBUG=false
 export CARGO_PROFILE_RELEASE_STRIP="symbols"
-export CARGO_PROFILE_RELEASE_LTO="fat"
-export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1
+export CARGO_PROFILE_RELEASE_LTO="thin"
+export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=16
 
 export CRAFT_FONTS_DIR=$PWD/craft-fonts
 export CRAFT_FONTS_REQUIRED=1

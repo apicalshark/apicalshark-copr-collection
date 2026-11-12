@@ -14,7 +14,7 @@
 %global app_id io.tangencylabs.solidcraft
 
 Name:           solidcraft
-Version:        0.30.1
+Version:        0.40.1
 Release:        1%{?dist}
 Summary:        Open-source parametric 3D CAD application built in pure Rust
 
@@ -66,6 +66,11 @@ export CARGO_HOME=$PWD/.cargo-home
 export RUSTFLAGS="%{custom_rustflags}"
 
 # Cargo profiles configure optimizations, LTO, and stripping safely for target binaries:
+export CARGO_PROFILE_RELEASE_OPT_LEVEL=3
+export CARGO_PROFILE_RELEASE_DEBUG=false
+export CARGO_PROFILE_RELEASE_STRIP="symbols"
+export CARGO_PROFILE_RELEASE_LTO="thin"
+export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=16
 cargo build --release --locked -p solidcraft -p solidcraft-cli
 
 %install
