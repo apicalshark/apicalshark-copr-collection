@@ -18,7 +18,7 @@
 %global craft_i18n_short %(c=%{craft_i18n_commit}; echo ${c:0:7})
 
 Name:           photocraft
-Version:        0.23.0
+Version:        0.23.1
 Release:        1%{?dist}
 Summary:        Open-source native image editor built in Rust
 
